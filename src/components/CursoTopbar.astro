@@ -1,0 +1,72 @@
+---
+import { UserButton } from '@clerk/astro/components';
+---
+
+<header class="curso-topbar">
+  <div class="curso-topbar-inner container-lg">
+    <a href="/curso" class="curso-topbar-logo">
+      <div class="wordmark">
+        <span class="wordmark-top">EMPRESA</span>
+        <span class="wordmark-bottom">AUTÔNOMA</span>
+      </div>
+    </a>
+    <nav class="curso-topbar-nav">
+      <a href="/curso" class="curso-topbar-link">Módulos</a>
+      <UserButton />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .curso-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(9, 9, 11, 0.92);
+    backdrop-filter: blur(20px) saturate(120%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 0;
+  }
+  .curso-topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .curso-topbar-logo {
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+  .wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .wordmark-top {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--accent);
+  }
+  .wordmark-bottom {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .curso-topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .curso-topbar-link {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .curso-topbar-link:hover {
+    color: var(--text-primary);
+  }
+</style>
