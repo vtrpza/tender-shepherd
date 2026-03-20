@@ -73,6 +73,10 @@ const { title, lines, autoplay = false, id = `terminal-${Math.random().toString(
   .tl-red     { color: var(--red); }
   .tl-amber   { color: var(--amber); font-weight: 700; }
   .tl-muted   { color: var(--text-muted); }
+  .terminal-line.visible {
+    opacity: 1;
+    animation: fade-in-up 0.4s ease forwards;
+  }
   .cursor {
     display: inline-block;
     margin-left: 2px;
@@ -91,8 +95,7 @@ const { title, lines, autoplay = false, id = `terminal-${Math.random().toString(
     lines.forEach((line) => {
       const delay = Number((line as HTMLElement).dataset.delay ?? 0);
       setTimeout(() => {
-        (line as HTMLElement).style.opacity = '1';
-        (line as HTMLElement).style.animation = 'fade-in-up 0.4s ease forwards';
+        (line as HTMLElement).classList.add('visible');
       }, delay);
     });
   }
