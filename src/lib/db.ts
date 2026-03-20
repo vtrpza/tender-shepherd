@@ -25,3 +25,18 @@ export async function recordPurchase(
     ON CONFLICT (clerk_user_id, module_slug) DO NOTHING
   `;
 }
+
+export async function recordBundlePurchase(
+  clerkUserId: string,
+  stripeSessionId: string,
+  slugs: string[],
+): Promise<void> {
+  const sql = getDb();
+  for (const slug of slugs) {
+    await sql`
+      INSERT INTO purchases (clerk_user_id, module_slug, stripe_session_id)
+      VALUES (${clerkUserId}, ${slug}, ${stripeSessionId + '-' + slug})
+      ON CONFLICT (clerk_user_id, module_slug) DO NOTHING
+    `;
+  }
+}

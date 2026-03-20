@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
-import { recordPurchase } from '../../../lib/db';
-import { isValidSlug } from '../../../lib/modules';
+import { recordPurchase, recordBundlePurchase } from '../../../lib/db';
+import { isValidSlug, MODULE_SLUGS } from '../../../lib/modules';
 
 const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY);
 
@@ -29,11 +29,17 @@ export const POST: APIRoute = async ({ request }) => {
     const clerkUserId = session.metadata?.clerk_user_id;
     const moduleSlug = session.metadata?.module_slug;
 
-    if (!clerkUserId || !moduleSlug || !isValidSlug(moduleSlug)) {
+    if (!clerkUserId || !moduleSlug) {
       return new Response('Missing metadata', { status: 400 });
     }
 
-    await recordPurchase(clerkUserId, moduleSlug, session.id);
+    if (moduleSlug === 'bundle') {
+      await recordBundlePurchase(clerkUserId, session.id, MODULE_SLUGS);
+    } else if (isValidSlug(moduleSlug)) {
+      await recordPurchase(clerkUserId, moduleSlug, session.id);
+    } else {
+      return new Response('Invalid module slug', { status: 400 });
+    }
   }
 
   return new Response('ok', { status: 200 });
