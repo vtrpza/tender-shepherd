@@ -12,6 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.0.7"
+    "@astrojs/node": "^10.0.3",
+    "@clerk/astro": "^3.0.5",
+    "@neondatabase/serverless": "^1.0.2",
+    "astro": "^6.0.7",
+    "stripe": "^20.4.1"
   }
 }
