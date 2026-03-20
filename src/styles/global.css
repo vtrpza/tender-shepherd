@@ -9,9 +9,11 @@
   --text-secondary: #a1a1aa;
   --text-muted:     #52525b;
 
-  --accent:       #f97316;
-  --accent-hover: #fb923c;
-  --accent-glow:  rgba(249, 115, 22, 0.12);
+  --accent:          #f97316;
+  --accent-hover:    #ea6c0a;
+  --accent-glow:     rgba(249, 115, 22, 0.15);
+  --brand-contrast:  #e4e4e7;
+  --brand-rule:      linear-gradient(90deg, #f97316 0%, transparent 60%);
 
   --green: #10b981;
   --red:   #ef4444;
@@ -119,6 +121,13 @@ code, .mono { font-family: 'Geist Mono', monospace; }
   border: 1px solid var(--border);
 }
 .btn-ghost:hover { border-color: var(--text-secondary); transform: translateY(-2px); }
+
+/* ===== BRAND RULE ===== */
+.brand-rule {
+  height: 1px;
+  background: var(--brand-rule);
+  margin-bottom: 2rem;
+}
 
 /* ===== GRADIENT TEXT ===== */
 .gradient-text {

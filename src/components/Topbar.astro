@@ -2,7 +2,12 @@
 ---
 <header class="topbar" id="topbar">
   <div class="topbar-inner container-lg">
-    <a href="/" class="topbar-logo">VP.</a>
+    <a href="/" class="topbar-logo">
+      <div class="wordmark">
+        <span class="wordmark-top">EMPRESA</span>
+        <span class="wordmark-bottom">AUTÔNOMA</span>
+      </div>
+    </a>
     <span class="topbar-vagas" id="topbar-vagas" style="display:none">
       <span data-vagas></span> vagas restantes
     </span>
@@ -35,12 +40,28 @@
     padding-bottom: 16px;
   }
   .topbar-logo {
-    font-family: 'Geist Mono', monospace;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
     text-decoration: none;
-    letter-spacing: -1px;
+  }
+  .wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .wordmark-top {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+  .wordmark-bottom {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    text-transform: uppercase;
   }
   .topbar-vagas {
     font-family: 'Geist Mono', monospace;
