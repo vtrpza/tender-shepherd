@@ -1,0 +1,196 @@
+---
+import CursoLayout from '../../layouts/CursoLayout.astro';
+import Lesson from '../../components/Lesson.astro';
+import { getUserModules } from '../../lib/db';
+
+const { userId } = Astro.locals.auth();
+const owned = userId ? await getUserModules(userId) : [];
+if (!owned.includes('trafego')) {
+  return Astro.redirect('/curso');
+}
+---
+
+<CursoLayout title="Módulo 01: Agente de Tráfego — Empresa Autônoma">
+  <section class="module-page">
+    <div class="module-header">
+      <span class="label">Módulo 01</span>
+      <h1>Agente de Tráfego Autônomo</h1>
+      <p class="module-sub">Construa um agente que audita suas campanhas de Meta Ads e Google Ads, gera relatórios e dispara alertas — tudo no piloto automático.</p>
+    </div>
+
+    <div class="lessons">
+      <Lesson
+        number={1}
+        title="Configurando o Claude Code"
+        description="Instale o Claude Code, configure o ambiente e escreva seu primeiro CLAUDE.md — o arquivo que diz ao agente como se comportar no seu projeto."
+        notes={`
+          <p>Nesta aula você vai:</p>
+          <ul>
+            <li>Instalar o Claude Code via terminal</li>
+            <li>Entender a estrutura de um projeto com <strong>CLAUDE.md</strong></li>
+            <li>Configurar permissões e comandos personalizados</li>
+            <li>Rodar seu primeiro prompt no modo interativo</li>
+          </ul>
+        `}
+        code={`# Instalar Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# Iniciar no seu projeto
+cd meu-projeto
+claude
+
+# Ou rodar um comando direto (modo headless)
+claude -p "Analise a estrutura deste projeto"`}
+        codeLang="bash"
+      />
+
+      <Lesson
+        number={2}
+        title="Conectando Meta Ads e Google Ads via MCP"
+        description="Configure servidores MCP que dão ao seu agente acesso direto às APIs do Meta Ads e Google Ads — sem precisar escrever código de integração."
+        notes={`
+          <p>O <strong>Model Context Protocol (MCP)</strong> permite conectar o Claude Code a ferramentas externas via servidores padronizados.</p>
+          <p>Você vai aprender a:</p>
+          <ul>
+            <li>Configurar o arquivo <strong>.mcp.json</strong> no seu projeto</li>
+            <li>Conectar ao servidor MCP do Meta Ads (campanhas, ad sets, métricas)</li>
+            <li>Conectar ao servidor MCP do Google Ads (keywords, quality score, CPC)</li>
+            <li>Testar as conexões com prompts simples</li>
+          </ul>
+        `}
+        code={`// .mcp.json — Configuração dos servidores MCP
+{
+  "mcpServers": {
+    "meta-ads": {
+      "command": "npx",
+      "args": ["-y", "mcp-meta-ads"],
+      "env": {
+        "META_ACCESS_TOKEN": "seu-token",
+        "META_AD_ACCOUNT_ID": "act_123456"
+      }
+    },
+    "google-ads": {
+      "command": "npx",
+      "args": ["-y", "mcp-google-ads"],
+      "env": {
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "seu-token",
+        "GOOGLE_ADS_CUSTOMER_ID": "123-456-7890"
+      }
+    }
+  }
+}`}
+        codeLang="json"
+      />
+
+      <Lesson
+        number={3}
+        title="Construindo o Agente de Auditoria"
+        description="Crie o agente que analisa CPA, ROAS, custo por keyword e identifica desperdício — usando comandos personalizados do Claude Code."
+        notes={`
+          <p>Aqui é onde a mágica acontece. Você vai criar um <strong>comando personalizado</strong> que o agente executa para auditar todas as suas campanhas de uma vez.</p>
+          <ul>
+            <li>Criar o arquivo de comando em <strong>.claude/commands/audit-ads.md</strong></li>
+            <li>Definir os critérios de auditoria (CPA acima do limite, ROAS abaixo do mínimo, keywords com quality score baixo)</li>
+            <li>Gerar um relatório estruturado com recomendações</li>
+            <li>Testar com dados reais da sua conta</li>
+          </ul>
+        `}
+        code={`# .claude/commands/audit-ads.md
+
+Analise todas as campanhas ativas nas contas Meta Ads e Google Ads.
+
+Para cada campanha, avalie:
+- CPA vs. meta (flag se > 20% acima)
+- ROAS vs. mínimo de 3x (flag se abaixo)
+- Keywords com Quality Score < 5 no Google Ads
+- Ad sets com frequência > 3 no Meta Ads
+
+Gere um relatório com:
+1. Resumo executivo (3 linhas)
+2. Campanhas com problema (tabela)
+3. Top 5 recomendações de ação imediata`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={4}
+        title="Relatórios PDF Automatizados"
+        description="Configure o agente para gerar relatórios em PDF diariamente via cron — sem precisar abrir o computador."
+        notes={`
+          <p>Você vai configurar uma <strong>automação completa</strong> que roda todos os dias às 8h:</p>
+          <ul>
+            <li>Criar um script shell que invoca o Claude Code em modo headless</li>
+            <li>Gerar o relatório em formato Markdown</li>
+            <li>Converter para PDF com formatação profissional</li>
+            <li>Configurar o cron job no servidor</li>
+          </ul>
+        `}
+        code={`#!/bin/bash
+# audit-daily.sh — Roda a auditoria diária
+
+cd /home/user/meu-projeto
+
+# Gera o relatório via Claude Code (headless)
+claude -p "/audit-ads" --output report.md
+
+# Converte para PDF
+npx md-to-pdf report.md
+
+# Move para pasta de relatórios
+mv report.pdf reports/audit-$(date +%Y-%m-%d).pdf
+
+echo "Relatório gerado: audit-$(date +%Y-%m-%d).pdf"`}
+        codeLang="bash"
+      />
+
+      <Lesson
+        number={5}
+        title="Sistema de Alertas"
+        description="Configure alertas automáticos via Slack ou WhatsApp quando métricas saem do padrão — o agente avisa você antes do prejuízo."
+        notes={`
+          <p>O sistema de alertas é a última camada de automação. Quando o agente detecta anomalias, ele notifica você instantaneamente.</p>
+          <ul>
+            <li>Configurar webhook do Slack para receber alertas</li>
+            <li>Definir thresholds de alerta (CPA, ROAS, budget burn rate)</li>
+            <li>Criar o comando de monitoramento contínuo</li>
+            <li>Integrar com WhatsApp via API do Twilio (opcional)</li>
+          </ul>
+        `}
+        code={`# .claude/commands/monitor-alerts.md
+
+Verifique as métricas das últimas 4 horas em todas as campanhas.
+
+Dispare alerta via webhook se:
+- CPA subiu mais de 30% vs. média dos últimos 7 dias
+- Budget diário consumido > 80% antes das 14h
+- ROAS caiu abaixo de 2x em qualquer campanha
+- Qualquer campanha pausada automaticamente pela plataforma
+
+Formato do alerta:
+🚨 [PLATAFORMA] Campanha: NOME
+Métrica: VALOR_ATUAL vs. LIMITE
+Ação sugerida: RECOMENDAÇÃO`}
+        codeLang="markdown"
+      />
+    </div>
+  </section>
+</CursoLayout>
+
+<style>
+  .module-header {
+    margin-bottom: 48px;
+  }
+  .module-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .module-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+</style>
