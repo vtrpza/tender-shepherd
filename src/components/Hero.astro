@@ -1,0 +1,149 @@
+---
+import Terminal from './Terminal.astro';
+import type { TerminalLine } from './Terminal.astro';
+
+const heroLines: TerminalLine[] = [
+  { text: '$ claude -p "Auditar campanhas Meta Ads dos últimos 7 dias"', color: 'accent', delay: 500 },
+  { text: '⠋ Conectando ao Meta Ads via MCP...', color: 'muted', delay: 1400 },
+  { text: '✓ 14 campanhas analisadas em 23 segundos', color: 'green', delay: 2300 },
+  { text: '⚠ Campanha "Remarketing_SP": CPA 340% acima do target', color: 'red', delay: 3200 },
+  { text: '⚠ 47 keywords sem conversão queimando R$214/dia', color: 'red', delay: 4100 },
+  { text: '✓ Keywords negativas adicionadas automaticamente', color: 'green', delay: 5000 },
+  { text: '✓ Relatório gerado → /reports/audit-mar-2026.pdf', color: 'green', delay: 5900 },
+  { text: '💰 Economia identificada: R$12.847/mês', color: 'amber', delay: 6800, cursor: true },
+];
+---
+
+<section class="hero">
+  <!-- Hero radial glow -->
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <!-- Badge de urgência -->
+    <div class="hero-badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span class="mono">PRÉ-VENDA FUNDADOR — Restam <span data-vagas>73</span> de 100 vagas</span>
+    </div>
+
+    <!-- Headline -->
+    <h1>
+      Seu negócio funcionando<br/>
+      <span class="gradient-text">enquanto você não está.</span>
+    </h1>
+
+    <!-- Sub-headline -->
+    <p class="hero-sub">
+      3 micro-cursos pra você montar agentes de IA que cuidam<br/>
+      do tráfego, vendas e financeiro da sua empresa — sozinhos.<br/>
+      <strong>Sem saber programar. Sem equipe de TI. Sem mensalidade.</strong>
+    </p>
+
+    <!-- Dual CTAs -->
+    <div class="hero-ctas">
+      <a href="#checkout-completo" class="btn btn-primary btn-lg">
+        Garantir Vaga — R$97/módulo →
+      </a>
+      <a href="#modulos" class="btn btn-ghost btn-lg">
+        Ver o que você vai montar ↓
+      </a>
+    </div>
+
+    <!-- Micro social proof -->
+    <div class="hero-proof">
+      <span>✓ Preço de fundador (depois sobe)</span>
+      <span class="proof-sep">·</span>
+      <span>✓ Garantia de 7 dias</span>
+      <span class="proof-sep">·</span>
+      <span>✓ Acesso vitalício</span>
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div class="container hero-terminal">
+    <Terminal
+      title="empresa-autonoma — agente de tráfego"
+      lines={heroLines}
+      autoplay={true}
+      id="terminal-hero"
+    />
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint" aria-hidden="true">
+    <span class="scroll-arrow">↓</span>
+    <span class="scroll-label">veja como funciona</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 160px 0 80px;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(249,115,22,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-content { text-align: center; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.2);
+    border-radius: var(--radius-badge);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .badge-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  h1 { margin-bottom: 24px; }
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 18px);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-sub strong { color: var(--text-primary); font-weight: 600; }
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .btn-lg { padding: 16px 32px; font-size: 16px; }
+  .hero-proof {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .proof-sep { color: var(--border); }
+  .hero-terminal { margin-top: 64px; max-width: 700px; }
+  .scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 48px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .scroll-arrow { font-size: 20px; animation: arrow-bounce 2s ease-in-out infinite; }
+  @media (max-width: 640px) {
+    .hero { padding: 120px 0 60px; }
+    .hero-ctas { flex-direction: column; align-items: stretch; }
+    .btn-lg { text-align: center; justify-content: center; }
+  }
+</style>

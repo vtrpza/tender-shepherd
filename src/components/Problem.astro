@@ -1,0 +1,70 @@
+---
+const cards = [
+  {
+    color: 'var(--accent)',
+    title: 'Seu gestor de tráfego cobra R$3.000/mês.',
+    body: `O relatório dele é um PDF genérico que você não entende.
+Enquanto isso, keywords ruins queimam R$200/dia.
+Campanhas saturadas continuam rodando sem pausa.
+E você descobre o prejuízo só no fim do mês.`,
+    insight: 'Você está pagando pra ter menos controle, não mais.',
+  },
+  {
+    color: 'var(--blue)',
+    title: 'Seus leads estão esfriando agora.',
+    body: `Entraram pelo Instagram, pelo WhatsApp, pelo formulário.
+Ninguém respondeu em menos de 2 horas.
+O follow-up ficou "pra amanhã". Amanhã virou nunca.
+Aquele lead de R$15k? Fechou com o concorrente.`,
+    insight: 'Seu CRM tem 300 contatos. 290 estão no limbo.',
+  },
+  {
+    color: 'var(--green)',
+    title: 'Sua planilha tem 2 semanas de atraso.',
+    body: `Você não sabe quanto gastou com fornecedores esse mês.
+Não sabe se pode contratar mais uma pessoa.
+Decisões de R$50k sendo tomadas no feeling.
+Porque ninguém consolida os números a tempo.`,
+    insight: 'O DRE? Aquele Excel que o contador manda no dia 20 do mês seguinte. Tarde demais.',
+  },
+];
+---
+<section class="problem section">
+  <div class="container">
+    <div class="problem-header reveal">
+      <h2>Enquanto você lê isso,<br/>seu negócio está sangrando.</h2>
+      <p class="problem-sub">
+        Eu sei porque eu vejo isso todo dia nos clientes da VP Solutions.<br/>
+        Três áreas que sangram em silêncio. Todo mês. Sem ninguém perceber.
+      </p>
+    </div>
+    <div class="problem-grid">
+      {cards.map((card, i) => (
+        <div class="problem-card reveal" style={`--card-color:${card.color}; transition-delay:${i * 120}ms`}>
+          <h3>{card.title}</h3>
+          <p class="card-body">{card.body}</p>
+          <p class="card-insight"><em>{card.insight}</em></p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem-header { text-align: center; margin-bottom: 64px; }
+  .problem-sub { margin-top: 16px; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .problem-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--card-color);
+    border-radius: var(--radius-card);
+    padding: 32px;
+  }
+  .problem-card h3 { color: var(--text-primary); margin-bottom: 16px; }
+  .card-body { white-space: pre-line; font-size: 15px; margin-bottom: 16px; }
+  .card-insight { color: var(--text-muted); font-size: 14px; }
+  @media (max-width: 900px) {
+    .problem-grid { grid-template-columns: 1fr; }
+  }
+</style>

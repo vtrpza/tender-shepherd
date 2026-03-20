@@ -1,0 +1,71 @@
+---
+const badges = [
+  '10+ anos de experiência',
+  'Founder VP Solutions',
+  'Engenheiro fullstack sênior',
+  'Automação com IA na prática',
+];
+---
+<section class="author section">
+  <div class="container">
+    <div class="author-grid reveal">
+      <!-- Photo -->
+      <div class="author-photo-wrap">
+        <img
+          src="https://vp-solutions-lp.vercel.app/founder.png"
+          alt="Vitor Pouza — Founder VP Solutions"
+          class="author-photo"
+          onerror="this.parentElement.style.display='none'"
+          width="300"
+          height="360"
+        />
+      </div>
+      <!-- Text -->
+      <div class="author-text">
+        <span class="label">QUEM ESTÁ POR TRÁS DISSO</span>
+        <h2>Prazer, Vitor Pouza.<br/>Pode me chamar de VP.</h2>
+        <div class="author-body">
+          <p>10 anos construindo software pra negócios reais.<br/>
+          Não sou guru de Instagram. Não vendo fórmula mágica.<br/>
+          Sou engenheiro — e engenheiro resolve problema com código, não com slide.</p>
+          <p>Na VP Solutions, eu já entrego automação com IA como serviço.<br/>
+          Agentes que auditam campanhas, classificam leads, processam extratos.<br/>
+          Cobro R$5.000–30.000 por projeto. Clientes pagam porque funciona.</p>
+          <p>Agora eu decidi empacotar o conhecimento em 3 micro-cursos<br/>
+          pra você montar seus próprios agentes — sem depender de mim.</p>
+          <p>Por que? Porque eu acredito que todo empresário deveria<br/>
+          ter essa capacidade. E porque ensinar é o melhor<br/>
+          marketing que existe.</p>
+        </div>
+        <div class="author-badges">
+          {badges.map(b => <span class="author-badge">{b}</span>)}
+        </div>
+        <a href="https://vp-solutions-lp.vercel.app/" target="_blank" rel="noopener" class="author-link">
+          Conheça meu trabalho →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .author-grid { display: grid; grid-template-columns: auto 1fr; gap: 64px; align-items: start; }
+  .author-photo { width: 280px; height: auto; border-radius: 12px; border: 1px solid var(--border); display: block; }
+  .author-text .label { display: block; margin-bottom: 16px; }
+  .author-text h2 { margin-bottom: 32px; }
+  .author-body p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+  .author-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+  .author-badge {
+    font-size: 12px; padding: 6px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-badge);
+    color: var(--text-secondary);
+  }
+  .author-link { color: var(--accent); font-size: 14px; font-weight: 600; text-decoration: none; }
+  .author-link:hover { text-decoration: underline; }
+  @media (max-width: 768px) {
+    .author-grid { grid-template-columns: 1fr; }
+    .author-photo { width: 100%; max-width: 320px; margin: 0 auto; }
+  }
+</style>

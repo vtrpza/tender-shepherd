@@ -1,0 +1,50 @@
+---
+import Terminal from './Terminal.astro';
+import type { TerminalLine } from './Terminal.astro';
+
+const salesLines: TerminalLine[] = [
+  { text: '$ claude -p "Classificar novos leads das últimas 24h"', color: 'accent', delay: 300 },
+  { text: '✓ 23 novos leads processados', color: 'green', delay: 1200 },
+  { text: '🔴 3 leads quentes → notificação enviada ao vendedor', color: 'red', delay: 2100 },
+  { text: '🟡 12 mornos → sequência de nurturing ativada', color: 'amber', delay: 3000 },
+  { text: '⚪ 8 frios → movidos para remarketing', color: 'muted', delay: 3900 },
+  { text: '⚠ Lead "Marcos Silva - TechShop" abriu proposta 3x\n  sem resposta há 2 dias. Prioridade: URGENTE.', color: 'red', delay: 4800, cursor: true },
+];
+
+const financeLines: TerminalLine[] = [
+  { text: '$ claude -p "Processar extrato de fevereiro e gerar DRE"', color: 'accent', delay: 300 },
+  { text: '✓ 347 transações classificadas em 18 segundos', color: 'green', delay: 1200 },
+  { text: '✓ DRE gerado → /reports/dre-fev-2026.pdf', color: 'green', delay: 2100 },
+  { text: '⚠ Alerta: Gastos com "Marketing" subiram 43% vs janeiro', color: 'red', delay: 3000 },
+  { text: '⚠ Alerta: 3 cobranças duplicadas identificadas (R$847)', color: 'red', delay: 3900 },
+  { text: '✓ Fluxo de caixa projetado: positivo até maio', color: 'green', delay: 4800 },
+  { text: '💰 Cobranças indevidas recuperáveis: R$847', color: 'amber', delay: 5700, cursor: true },
+];
+---
+
+<section class="techproof section">
+  <div class="container">
+    <div class="techproof-header reveal">
+      <h2>Isso não é PowerPoint. É o agente rodando.</h2>
+      <p>
+        Terminais reais. Outputs reais. Resultados reais.<br/>
+        Sem edição, sem trucagem, sem "representação artística".
+      </p>
+    </div>
+    <div class="techproof-grid">
+      <div class="reveal" style="transition-delay:0ms">
+        <Terminal title="agente-vendas — classificação diária" lines={salesLines} autoplay={false} id="terminal-sales" />
+      </div>
+      <div class="reveal" style="transition-delay:120ms">
+        <Terminal title="agente-financeiro — extrato fevereiro" lines={financeLines} autoplay={false} id="terminal-finance" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .techproof-header { text-align: center; margin-bottom: 64px; }
+  .techproof-header h2 { margin-bottom: 16px; }
+  .techproof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 768px) { .techproof-grid { grid-template-columns: 1fr; } }
+</style>

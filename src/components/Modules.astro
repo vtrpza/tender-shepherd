@@ -1,0 +1,172 @@
+---
+const modules = [
+  {
+    num: '01',
+    color: 'var(--accent)',
+    name: 'Agente de Tráfego Autônomo',
+    tagline: 'Seu gestor de tráfego que nunca dorme.',
+    does: [
+      'Audita CPA, ROAS e frequência de todas as campanhas',
+      'Identifica keywords queimando budget sem conversão',
+      'Pausa ou ajusta orçamento de campanhas saturadas',
+      'Gera relatório visual em PDF toda manhã',
+      'Manda alertas no Slack ou WhatsApp quando algo sai do padrão',
+    ],
+    configures: [
+      'Claude Code + MCP do Meta Ads e Google Ads',
+      'Script de audit com as regras do SEU negócio',
+      'Template de relatório personalizado',
+      'Cron job noturno que roda sem intervenção',
+      'Sistema de alertas inteligentes',
+    ],
+    result: 'R$2.000–5.000/mês de budget desperdiçado recuperado. Controle total. Todas as manhãs. Sem abrir o Gerenciador.',
+    href: '#checkout-trafego',
+  },
+  {
+    num: '02',
+    color: 'var(--blue)',
+    name: 'Agente de Vendas & CRM',
+    tagline: 'Nenhum lead esfria. Nenhum follow-up esquecido.',
+    does: [
+      'Classifica cada lead automaticamente (quente/morno/frio)',
+      'Gera mensagens de follow-up personalizadas por IA',
+      'Monitora pipeline e alerta deals parados há mais de 48h',
+      'Enriquece dados do contato com informações públicas',
+      'Gera relatório semanal de previsão de fechamento',
+    ],
+    configures: [
+      'Claude Code + MCP do HubSpot, Pipedrive ou planilha',
+      'Regras de classificação baseadas no SEU ICP',
+      'Templates de mensagem com o tom da SUA marca',
+      'Integração com WhatsApp e email',
+      'Automação diária de varredura de pipeline',
+    ],
+    result: '+20–30% de conversão por follow-up consistente. Zero lead esquecido. Visibilidade total do funil.',
+    href: '#checkout-vendas',
+  },
+  {
+    num: '03',
+    color: 'var(--green)',
+    name: 'Agente Financeiro Inteligente',
+    tagline: 'Seu CFO que trabalha de graça toda segunda-feira.',
+    does: [
+      'Processa extratos bancários (CSV/OFX) automaticamente',
+      'Classifica cada despesa por categoria com IA',
+      'Gera DRE e fluxo de caixa mensal formatados',
+      'Detecta anomalias: "Gasto com X subiu 40% vs mês passado"',
+      'Monta dashboard interativo com métricas-chave',
+    ],
+    configures: [
+      'Template de classificação pro seu tipo de negócio',
+      'Regras de alerta personalizadas (limites, categorias)',
+      'Dashboard HTML gerado pelo Claude Code',
+      'Automação semanal com envio por email',
+      'Backup automático dos relatórios',
+    ],
+    result: 'Decisões financeiras baseadas em dados reais. Toda segunda-feira. No seu email. Automaticamente.',
+    href: '#checkout-financeiro',
+  },
+];
+---
+
+<section class="modules section" id="modulos">
+  <div class="container">
+    <div class="modules-header reveal">
+      <span class="label">O QUE VOCÊ VAI CONSTRUIR</span>
+      <h2>3 agentes. 3 áreas do seu negócio. 1 final de semana.</h2>
+      <p>Cada módulo é independente — compre o que resolver sua dor mais urgente.<br/>Ou monte o ecossistema completo por R$197.</p>
+    </div>
+
+    <div class="modules-grid">
+      {modules.map((mod, i) => (
+        <div class="module-card reveal" style={`--mod-color:${mod.color}; transition-delay:${i * 120}ms`}>
+          <div class="module-badge">MÓDULO {mod.num}</div>
+          <h3>{mod.name}</h3>
+          <p class="module-tagline">"{mod.tagline}"</p>
+
+          <div class="module-section">
+            <div class="module-section-label">O que o agente FAZ por você:</div>
+            <ul>
+              {mod.does.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+
+          <div class="module-section">
+            <div class="module-section-label">O que você vai configurar:</div>
+            <ul>
+              {mod.configures.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+
+          <div class="module-result">
+            <strong>Resultado:</strong> {mod.result}
+          </div>
+
+          <a href={mod.href} class="btn btn-secondary module-cta">
+            Garantir Módulo {mod.num} — R$97 →
+          </a>
+          <p class="module-price-note">Preço de fundador. Depois: R$147.</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Combo CTA -->
+    <div class="combo-cta reveal">
+      <p class="combo-lead">Quer os 3? Leva o pacote.</p>
+      <a href="#checkout-completo" class="btn btn-primary combo-btn">
+        PACOTE COMPLETO — R$197 →
+      </a>
+      <p class="combo-sub">3 módulos · economize R$94 · acesso vitalício</p>
+      <p class="combo-price">De <s>R$291</s> por R$197 — preço de fundador.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .modules-header { text-align: center; margin-bottom: 64px; }
+  .modules-header .label { display: block; margin-bottom: 16px; }
+  .modules-header h2 { margin-bottom: 16px; }
+  .modules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 64px; }
+  .module-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--mod-color);
+    border-radius: var(--radius-card);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .module-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  }
+  .module-badge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--mod-color);
+  }
+  .module-tagline { color: var(--text-muted); font-style: italic; font-size: 14px; }
+  .module-section-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .module-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .module-card ul li { font-size: 14px; color: var(--text-secondary); padding-left: 16px; position: relative; }
+  .module-card ul li::before { content: '—'; position: absolute; left: 0; color: var(--text-muted); }
+  .module-result { font-size: 14px; color: var(--text-secondary); background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; }
+  .module-cta { margin-top: auto; justify-content: center; }
+  .module-price-note { font-size: 12px; color: var(--text-muted); text-align: center; }
+
+  /* Combo */
+  .combo-cta { text-align: center; padding: 48px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-card); }
+  .combo-lead { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 24px; }
+  .combo-btn { font-size: 18px; padding: 18px 48px; box-shadow: 0 8px 32px var(--accent-glow); }
+  .combo-btn:hover { box-shadow: 0 12px 48px rgba(249,115,22,0.25); }
+  .combo-sub { margin-top: 12px; font-size: 14px; color: var(--text-muted); }
+  .combo-price { margin-top: 8px; font-size: 15px; color: var(--text-secondary); }
+  .combo-price s { color: var(--text-muted); }
+
+  @media (max-width: 900px) { .modules-grid { grid-template-columns: 1fr; } }
+</style>

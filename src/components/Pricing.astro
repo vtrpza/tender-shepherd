@@ -1,0 +1,163 @@
+---
+const costs = [
+  { label: 'Gestor de Tráfego', value: 'R$ 3.000/mês' },
+  { label: 'SDR / Pré-vendas', value: 'R$ 2.500/mês' },
+  { label: 'Auxiliar Financeiro', value: 'R$ 2.000/mês' },
+];
+const includes = [
+  'Módulo 01: Agente de Tráfego Autônomo',
+  'Módulo 02: Agente de Vendas & CRM',
+  'Módulo 03: Agente Financeiro Inteligente',
+  'Scripts e templates prontos pra copiar e rodar',
+  'Arquivo CLAUDE.md configurado para cada área',
+  'Atualizações futuras incluídas',
+  'Acesso vitalício ao conteúdo',
+  'Comunidade exclusiva de empresários (bônus)',
+];
+const trustBadges = [
+  { icon: '🔒', title: 'Garantia incondicional de 7 dias', sub: 'não gostou, devolvemos 100%, sem pergunta' },
+  { icon: '📱', title: 'Acesso vitalício', sub: 'comprou uma vez, é seu pra sempre' },
+  { icon: '💳', title: 'Pagamento único', sub: 'sem assinatura, sem mensalidade surpresa' },
+];
+---
+
+<section class="pricing section">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <h2>Quanto custa NÃO automatizar?</h2>
+    </div>
+
+    <div class="pricing-grid reveal">
+      <!-- Cost column -->
+      <div class="pricing-col pricing-col-cost">
+        <div class="pricing-col-label">O que você paga hoje</div>
+        {costs.map(row => (
+          <div class="cost-row">
+            <span class="cost-label">{row.label}</span>
+            <span class="cost-dots"></span>
+            <span class="cost-value">{row.value}</span>
+          </div>
+        ))}
+        <div class="cost-divider"></div>
+        <div class="cost-row cost-total">
+          <span class="cost-label">Total mensal</span>
+          <span class="cost-dots"></span>
+          <span class="cost-value">R$ 7.500/mês</span>
+        </div>
+        <div class="cost-row cost-annual">
+          <span class="cost-label">Total anual</span>
+          <span class="cost-dots"></span>
+          <span class="cost-value cost-value-big">R$ 90.000/ano</span>
+        </div>
+      </div>
+
+      <!-- Package column -->
+      <div class="pricing-col pricing-col-package">
+        <div class="pricing-col-label">Empresa Autônoma</div>
+        <div class="pricing-tag">PACOTE COMPLETO — 3 MÓDULOS</div>
+        <ul class="pricing-includes">
+          {includes.map(item => <li>✓ {item}</li>)}
+        </ul>
+        <div class="pricing-price-block">
+          <span class="price-old">De R$291</span>
+          <span class="price-new">R$197</span>
+          <span class="price-note">preço de fundador</span>
+        </div>
+        <a href="#checkout-completo" class="btn btn-primary pricing-cta">
+          GARANTIR PACOTE COMPLETO — R$197 →
+        </a>
+      </div>
+    </div>
+
+    <!-- Individual options -->
+    <div class="pricing-individuals reveal">
+      <p>Ou escolha o que precisa agora:</p>
+      <div class="individual-btns">
+        <a href="#checkout-trafego"   class="btn btn-ghost">Módulo 01 — R$97</a>
+        <a href="#checkout-vendas"    class="btn btn-ghost">Módulo 02 — R$97</a>
+        <a href="#checkout-financeiro" class="btn btn-ghost">Módulo 03 — R$97</a>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="vagas-progress reveal">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="pricing-progress"></div>
+      </div>
+      <p class="progress-label"><span data-vagas>73</span> de 100 vagas preenchidas — restam <span data-vagas-remaining>27</span> com preço de fundador.</p>
+    </div>
+
+    <!-- Trust badges -->
+    <div class="trust-badges reveal">
+      {trustBadges.map(b => (
+        <div class="trust-badge">
+          <span class="trust-icon">{b.icon}</span>
+          <div>
+            <strong>{b.title}</strong>
+            <span>{b.sub}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
+  .pricing-col { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 40px; }
+  .pricing-col-package { border-color: var(--accent); }
+  .pricing-col-label { font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px; }
+  .cost-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+  .cost-label { white-space: nowrap; color: var(--text-secondary); font-size: 15px; }
+  .cost-dots { flex: 1; border-bottom: 1px dotted var(--border); margin-bottom: 4px; }
+  .cost-value { white-space: nowrap; color: var(--red); font-family: 'Geist Mono', monospace; font-size: 15px; }
+  .cost-divider { border-top: 1px solid var(--border); margin: 24px 0; }
+  .cost-total .cost-label, .cost-total .cost-value { font-weight: 700; color: var(--text-primary); }
+  .cost-annual .cost-value-big { font-size: 22px; font-weight: 800; }
+  .pricing-tag { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--accent); margin-bottom: 20px; }
+  .pricing-includes { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .pricing-includes li { font-size: 14px; color: var(--text-secondary); }
+  .pricing-price-block { margin-bottom: 24px; }
+  .price-old { font-size: 14px; color: var(--text-muted); text-decoration: line-through; display: block; }
+  .price-new { font-size: 48px; font-weight: 800; font-family: 'Geist Mono', monospace; color: var(--accent); display: block; }
+  .price-note { font-size: 13px; color: var(--text-muted); }
+  .pricing-cta { width: 100%; justify-content: center; font-size: 16px; padding: 16px; }
+
+  .pricing-individuals { text-align: center; margin-bottom: 48px; }
+  .pricing-individuals p { margin-bottom: 16px; }
+  .individual-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .vagas-progress { margin-bottom: 48px; }
+  .progress-bar-wrap { background: var(--bg-card); border-radius: 100px; height: 8px; overflow: hidden; margin-bottom: 12px; }
+  .progress-bar { height: 100%; background: var(--accent); border-radius: 100px; width: 0%; transition: width 1s ease; }
+  .progress-label { font-size: 13px; color: var(--text-muted); text-align: center; }
+
+  .trust-badges { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .trust-badge { display: flex; align-items: flex-start; gap: 12px; max-width: 280px; }
+  .trust-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .trust-badge strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; }
+  .trust-badge span { font-size: 13px; color: var(--text-muted); }
+
+  @media (max-width: 768px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .individual-btns { flex-direction: column; align-items: stretch; }
+  }
+</style>
+
+<script>
+  const progressBar = document.getElementById('pricing-progress') as HTMLElement;
+  if (progressBar) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const vagas = Number(localStorage.getItem('vagas_restantes') ?? 27);
+          const filled = 100 - vagas;
+          progressBar.style.width = `${filled}%`;
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(progressBar);
+  }
+</script>

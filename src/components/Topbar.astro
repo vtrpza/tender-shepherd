@@ -1,0 +1,70 @@
+---
+---
+<header class="topbar" id="topbar">
+  <div class="topbar-inner container-lg">
+    <a href="/" class="topbar-logo">VP.</a>
+    <span class="topbar-vagas" id="topbar-vagas" style="display:none">
+      <span data-vagas></span> vagas restantes
+    </span>
+    <a href="#checkout-completo" class="btn btn-primary topbar-cta">
+      Garantir Vaga — R$97 →
+    </a>
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .topbar.scrolled {
+    background: rgba(9, 9, 11, 0.85);
+    backdrop-filter: blur(20px) saturate(120%);
+    border-bottom-color: var(--border);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .topbar-logo {
+    font-family: 'Geist Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -1px;
+  }
+  .topbar-vagas {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .topbar-cta { padding: 10px 20px; font-size: 14px; }
+  @media (max-width: 640px) {
+    .topbar-vagas { display: none !important; }
+    .topbar-cta { font-size: 13px; padding: 10px 14px; }
+  }
+</style>
+
+<script>
+  const topbar = document.getElementById('topbar');
+  const topbarVagas = document.getElementById('topbar-vagas');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      topbar?.classList.add('scrolled');
+      if (topbarVagas) topbarVagas.style.display = 'block';
+    } else {
+      topbar?.classList.remove('scrolled');
+      if (topbarVagas) topbarVagas.style.display = 'none';
+    }
+  });
+</script>

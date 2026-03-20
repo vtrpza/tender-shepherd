@@ -1,0 +1,53 @@
+---
+const faqs = [
+  {
+    q: 'Preciso saber programar?',
+    a: 'Não. Zero código. Os scripts vêm prontos — você copia, cola, ajusta 3 variáveis (nome da empresa, suas regras, seus canais) e roda. Se você sabe instalar um app no celular, consegue.',
+  },
+  {
+    q: 'Quanto custa manter o Claude rodando?',
+    a: 'O plano Pro do Claude custa ~R$115/mês. Cada agente noturno consome centavos em tokens. Custo total: menos de R$150/mês para 3 agentes 24/7. Compare com R$7.500 em equipe operacional.',
+  },
+  {
+    q: 'E se a IA fizer besteira?',
+    a: 'Você define as regras. O agente só faz o que você autorizar. Quer que ele SUGIRA pausar uma campanha sem executar? Configurável. Quer que ele mande confirmação no WhatsApp antes de agir? Também. Você tem controle granular sobre cada ação. Eu mostro como.',
+  },
+  {
+    q: 'Isso substitui minha equipe?',
+    a: 'Não — e esse não é o objetivo. O agente cuida dos 80% repetitivos e operacionais. Sua equipe fica livre pros 20% que precisam de inteligência humana: estratégia, criatividade, relacionamento. Você não demite. Você libera.',
+  },
+  {
+    q: 'Já vi muito guru vendendo milagre com IA.',
+    a: 'Eu também. Por isso não prometo "6 em 7" nem "renda passiva". O que prometo: scripts que funcionam, demonstrações reais, e um passo a passo honesto de engenheiro. Não gostou? 7 dias pra pedir reembolso. Sem formulário.',
+  },
+  {
+    q: 'Por que tão barato?',
+    a: 'Duas razões. Primeiro: é pré-venda — quem entra agora trava o preço de fundador pra sempre. Segundo: na VP Solutions eu cobro R$5k–30k por automação sob medida. Esse curso é pra quem quer fazer sozinho. Preço de curso, não de consultoria.',
+  },
+];
+---
+
+<section class="faq section">
+  <div class="container">
+    <div class="faq-header reveal">
+      <h2>"Mas e se..." Já respondi.</h2>
+    </div>
+    <div class="faq-grid">
+      {faqs.map((faq, i) => (
+        <div class="faq-card reveal" style={`transition-delay:${(i % 2) * 100}ms`}>
+          <h3>P: {faq.q}</h3>
+          <p>{faq.a}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-header { text-align: center; margin-bottom: 64px; }
+  .faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .faq-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 32px; }
+  .faq-card h3 { color: var(--text-primary); font-size: 16px; margin-bottom: 12px; }
+  .faq-card p { font-size: 15px; line-height: 1.7; }
+  @media (max-width: 640px) { .faq-grid { grid-template-columns: 1fr; } }
+</style>
