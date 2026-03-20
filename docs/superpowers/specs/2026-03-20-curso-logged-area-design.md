@@ -101,17 +101,17 @@ export const MODULES = {
   trafego: {
     name: 'Agente de Trafego Autonomo',
     priceEnvKey: 'STRIPE_PRICE_TRAFEGO',
-    displayPrice: 'R$ 297', // hardcoded display price for UI
+    displayPrice: 'R$97',
   },
   vendas: {
     name: 'Agente de Vendas & CRM',
     priceEnvKey: 'STRIPE_PRICE_VENDAS',
-    displayPrice: 'R$ 297',
+    displayPrice: 'R$97',
   },
   financeiro: {
     name: 'Agente Financeiro Inteligente',
     priceEnvKey: 'STRIPE_PRICE_FINANCEIRO',
-    displayPrice: 'R$ 297',
+    displayPrice: 'R$97',
   },
 } as const
 
