@@ -1,7 +1,7 @@
 ---
 import EbookLayout from '../layouts/EbookLayout.astro';
 ---
-<EbookLayout title="Como Automatizar Sua Empresa com Agentes de IA — E-book">
+<EbookLayout title="Quick Start Claude Code — Guia Prático para Donos de Empresa">
 
 <style>
   /* ── Layout ── */
@@ -53,6 +53,12 @@ import EbookLayout from '../layouts/EbookLayout.astro';
   .cover-subtitle {
     font-size: 20px;
     color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .cover-tagline {
+    font-size: 16px;
+    color: var(--accent);
+    font-weight: 600;
     margin-bottom: 64px;
   }
   .cover-author {
@@ -95,6 +101,36 @@ import EbookLayout from '../layouts/EbookLayout.astro';
     font-weight: 700;
   }
 
+  /* ── Cost row ── */
+  .cost-table { margin: 24px 0; }
+  .cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .cost-row .cost-value { color: #f87171; font-weight: 700; font-family: var(--font-mono); }
+  .cost-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid #f87171;
+    border-radius: 8px;
+    margin-top: 4px;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 16px;
+  }
+  .cost-total .cost-value { color: #f87171; font-size: 18px; font-family: var(--font-mono); }
+
   /* ── Concept blocks ── */
   .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
   .concept-card {
@@ -114,6 +150,16 @@ import EbookLayout from '../layouts/EbookLayout.astro';
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 8px;
+  }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
   }
   .outcomes { list-style: none; margin: 20px 0; }
   .outcomes li {
@@ -143,7 +189,42 @@ import EbookLayout from '../layouts/EbookLayout.astro';
   .c-green  { color: #4ade80; }
   .c-yellow { color: #facc15; }
   .c-blue   { color: #60a5fa; }
+  .c-red    { color: #f87171; }
   .c-muted  { color: #555566; }
+
+  /* ── CLAUDE.md config blocks — distinct from terminal output ── */
+  .claude-md-block {
+    background: #0f0f14;
+    border: 1px solid #3a3a50;
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .claude-md-block code { color: #c8c8dc; }
+
+  /* ── Setup step label ── */
+  .step-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  /* ── Course bridge box ── */
+  .course-bridge {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .course-bridge strong { color: var(--accent); }
 
   /* ── Next steps ── */
   .module-list { list-style: none; margin: 24px 0; }
@@ -190,10 +271,18 @@ import EbookLayout from '../layouts/EbookLayout.astro';
     font-weight: 700;
   }
 
+  @media (max-width: 480px) {
+    .ebook-page { padding: 40px 24px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .cost-row, .cost-total { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .bundle-box { flex-direction: column; gap: 8px; }
+  }
+
   @media print {
     .ebook-page + .ebook-page { border-top: none; margin-top: 0; padding-top: 0; }
     .concept-grid { grid-template-columns: 1fr 1fr; }
     .bundle-box { background: #6c63ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .claude-md-block { background: #f8f8fc !important; border-left-color: #6c63ff !important; }
   }
 </style>
 
@@ -202,137 +291,379 @@ import EbookLayout from '../layouts/EbookLayout.astro';
   <button class="print-btn" onclick="window.print()">Imprimir / Salvar PDF</button>
 </div>
 
-<!-- ── 1. COVER ── -->
+<!-- ══════════════════════════════════════════════════
+     BLOCK 1 — CONTEXT
+     ══════════════════════════════════════════════════ -->
+
+<!-- ── SECTION 01 — COVER ── -->
 <div class="ebook-page cover">
   <span class="cover-badge">E-book gratuito</span>
-  <h1>Como Automatizar Sua Empresa com Agentes de IA</h1>
-  <p class="cover-subtitle">Um guia prático para donos de pequenas empresas</p>
+  <h1>Quick Start Claude Code</h1>
+  <p class="cover-subtitle">O guia prático de Claude Code para donos de pequenas empresas</p>
+  <p class="cover-tagline">Você vai montar 3 agentes reais neste guia</p>
   <p class="cover-author"><strong>Vitor Pouza</strong><br/>VP Solutions &nbsp;·&nbsp; 2026</p>
 </div>
 
-<!-- ── 2. INTRO ── -->
+<!-- ── SECTION 02 — O PROBLEMA REAL ── -->
 <div class="ebook-page intro">
-  <h2>O Problema das Pequenas Empresas em 2026</h2>
+  <p class="block-label">Bloco 1 — Contexto</p>
+  <h2>O Problema Real em 2026</h2>
   <p>Você investe em tráfego pago, contrata vendedores, tenta organizar o financeiro — mas a sensação é de que a empresa roda <strong>só enquanto você está olhando</strong>. Assim que você desliga o computador, tudo para.</p>
   <p>Esse não é um problema de esforço. É um problema de estrutura. Três gargalos aparecem em quase toda empresa pequena:</p>
 
   <ul class="pain-list">
     <li><strong>Tráfego caro e sem controle.</strong> Campanhas rodando no horário errado, com criativos velhos, consumindo budget sem diagnóstico. Você descobre o problema depois que o dinheiro foi embora.</li>
     <li><strong>Vendas sem follow-up.</strong> Um lead entra, você ou seu time responde — tarde. Dois dias depois ele já fechou com o concorrente. O CRM é uma lista de nomes esquecidos.</li>
-    <li><strong>Financeiro cego.</strong> Cobranças duplicadas, boletos não pagos, margem que você só descobre no fim do mês. Decisões tomadas no feeling, não em dados.</li>
+    <li><strong>Financeiro cego.</strong> Cobranças duplicadas, boletos vencidos, margem que você só descobre no fim do mês. Decisões tomadas no feeling, não em dados.</li>
   </ul>
 
-  <p>A boa notícia: esses três gargalos têm solução. Não com mais funcionários — com <strong>agentes de IA</strong> que trabalham enquanto você dorme.</p>
-</div>
+  <p>Qual o custo real disso? Se você resolvesse contratando profissionais dedicados:</p>
 
-<!-- ── 3. CONCEPT ── -->
-<div class="ebook-page concept">
-  <h2>O Que São Agentes de IA</h2>
-  <p>Esqueça robôs de ficção científica. Um agente de IA é, na prática, um <strong>script inteligente</strong> que executa tarefas repetíveis de forma autônoma — sem precisar que você acione manualmente.</p>
-  <p>Ele pode rodar em dois modos:</p>
-
-  <div class="concept-grid">
-    <div class="concept-card">
-      <h4>Agendado</h4>
-      <p>Executa em horários fixos. Todo dia às 6h verifica suas campanhas. Toda segunda-feira gera o relatório financeiro.</p>
+  <div class="cost-table">
+    <div class="cost-row">
+      <span>Gestor de tráfego</span>
+      <span class="cost-value">R$3.000/mês</span>
     </div>
-    <div class="concept-card">
-      <h4>Disparado por evento</h4>
-      <p>Age quando algo acontece. Um lead novo entra no CRM → o agente envia o follow-up em menos de 5 minutos.</p>
+    <div class="cost-row">
+      <span>SDR (pré-vendas)</span>
+      <span class="cost-value">R$2.500/mês</span>
+    </div>
+    <div class="cost-row">
+      <span>Auxiliar financeiro</span>
+      <span class="cost-value">R$2.000/mês</span>
+    </div>
+    <div class="cost-total">
+      <span>Total anual</span>
+      <span class="cost-value">R$90.000/ano</span>
     </div>
   </div>
 
-  <p>Para o dono de empresa, isso significa: <strong>você define a regra uma vez</strong>. O agente executa para sempre.</p>
-  <p>Você não precisa saber programar para montar esses agentes. Nos módulos do curso, cada agente é construído com ferramentas no-code/low-code que qualquer dono de negócio consegue operar.</p>
+  <p>Com Claude Code, você substitui essas 3 funções por agentes que rodam no seu computador — <strong>sem CLT, sem férias, sem 13º</strong>.</p>
 </div>
 
-<!-- ── 4. AGENT 01 ── -->
-<div class="ebook-page agent">
-  <p class="agent-number">Agente 01</p>
-  <h2>Tráfego Autônomo</h2>
-  <p>Este agente conecta às suas campanhas de Meta Ads e Google Ads e audita performance automaticamente. Ele pausa anúncios com CPL acima do limite, sobe o orçamento dos criativos campeões e envia um relatório de diagnóstico toda manhã.</p>
-  <p><strong>O que ele faz na prática:</strong></p>
+<!-- ══════════════════════════════════════════════════
+     BLOCK 2 — CLAUDE CODE FOUNDATION
+     ══════════════════════════════════════════════════ -->
 
-  <ul class="outcomes">
-    <li>Monitora CPL, CTR e ROAS a cada hora</li>
-    <li>Pausa campanhas fora do threshold sem intervenção manual</li>
-    <li>Escala budget dos anúncios com melhor desempenho</li>
-    <li>Gera relatório diário com alertas de anomalia</li>
-  </ul>
+<!-- ── SECTION 03 — O QUE É CLAUDE CODE ── -->
+<div class="ebook-page concept">
+  <p class="block-label">Bloco 2 — Fundamentos</p>
+  <h2>O Que é Claude Code</h2>
+  <p>Claude Code é uma ferramenta de linha de comando da Anthropic que permite criar <strong>agentes autônomos</strong> capazes de raciocinar, planejar e usar ferramentas reais do seu negócio — sem você precisar acompanhar cada passo.</p>
+  <p>Dois conceitos que você precisa entender:</p>
 
-<pre><code><span class="c-muted"># Agente de Tráfego — execução às 06:00 todos os dias</span>
-<span class="c-green">→</span> Buscando métricas de campanhas ativas...
-  Meta Ads: <span class="c-yellow">12 campanhas</span> | Google Ads: <span class="c-yellow">7 campanhas</span>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>CLAUDE.md = o cérebro</h4>
+      <p>Define quem o agente é, quais são suas regras de decisão e o que ele deve produzir. É um arquivo de texto que você escreve uma vez.</p>
+    </div>
+    <div class="concept-card">
+      <h4>MCP Servers = as mãos</h4>
+      <p>Conectam o agente a sistemas reais: Meta Ads, Google Ads, HubSpot, WhatsApp, seu banco. Sem MCP, o agente só conversa. Com MCP, ele age.</p>
+    </div>
+  </div>
 
-<span class="c-green">→</span> Auditando performance...
-  <span class="c-blue">PAUSADO</span>  "Criativo_v3_Stories"  CPL R$87 &gt; limite R$60
-  <span class="c-green">ESCALADO</span> "Criativo_v7_Feed"    ROAS 4.2x → budget +20%
-
-<span class="c-green">→</span> Relatório enviado para WhatsApp e email.
-  <span class="c-muted">Budget economizado hoje: R$340</span></code></pre>
+  <p><strong>Por que 2026 é diferente:</strong> Claude 4 consegue raciocinar, planejar e usar ferramentas de forma autônoma. Não é automação de cliques. É raciocínio aplicado a dados reais do seu negócio.</p>
+  <p>Você escreve a regra uma vez no CLAUDE.md. O agente executa para sempre.</p>
 </div>
 
-<!-- ── 5. AGENT 02 ── -->
-<div class="ebook-page agent">
-  <p class="agent-number">Agente 02</p>
-  <h2>Vendas &amp; CRM</h2>
-  <p>Este agente monitora seu CRM em tempo real. Quando um lead entra, ele envia a primeira mensagem de follow-up em menos de 5 minutos — personalizada com o nome, produto de interesse e horário do contato. Depois, agenda os próximos toques automaticamente.</p>
-  <p><strong>O que ele faz na prática:</strong></p>
+<!-- ── SECTION 04 — SETUP EM 15 MINUTOS ── -->
+<div class="ebook-page setup">
+  <h2>Setup em 15 Minutos</h2>
+  <p>Você precisa de: Node.js instalado + uma conta na Anthropic. Abra o terminal e execute:</p>
 
-  <ul class="outcomes">
-    <li>Detecta novos leads e dispara follow-up imediato</li>
-    <li>Personaliza mensagem com contexto do lead</li>
-    <li>Agenda sequência de follow-ups (D+1, D+3, D+7)</li>
-    <li>Atualiza status no CRM sem intervenção manual</li>
-  </ul>
+  <p class="step-label">Passo 1 — Instalar e autenticar</p>
+<pre><code><span class="c-muted"># Instalar Claude Code globalmente</span>
+npm install -g @anthropic-ai/claude-code
 
-<pre><code><span class="c-muted"># Agente de Vendas — disparado por evento (novo lead)</span>
-<span class="c-green">→</span> Novo lead detectado: <span class="c-yellow">Maria S.</span> — Produto: Módulo 02
+<span class="c-muted"># Autenticar com sua conta Anthropic</span>
+claude auth login
 
-<span class="c-green">→</span> Gerando mensagem personalizada...
-  "Oi Maria, vi que você se interessou pelo Módulo de Vendas..."
+<span class="c-muted"># Criar a pasta dos seus agentes</span>
+mkdir ~/meus-agentes && cd ~/meus-agentes</code></pre>
 
-<span class="c-green">→</span> Enviando via WhatsApp Business API...
-  <span class="c-blue">ENVIADO</span> 14:03 — tempo desde cadastro: <span class="c-yellow">3 min 12 seg</span>
+  <p class="step-label">Passo 2 — Entender a anatomia do CLAUDE.md</p>
+  <p>Todo agente tem um arquivo <code>CLAUDE.md</code> na sua pasta. Ele tem quatro seções:</p>
 
-<span class="c-green">→</span> Agendando sequência de follow-up:
-  D+1 → lembrete de valor   <span class="c-muted">✓</span>
-  D+3 → prova social        <span class="c-muted">✓</span>
-  D+7 → oferta de urgência  <span class="c-muted">✓</span></code></pre>
+  <div class="claude-md-block">
+<code>## Papel        → quem o agente é (gestor de tráfego, SDR, controller)
+## Ferramentas  → quais MCP servers estão disponíveis
+## Regras       → quando agir e como (CPL > R$60 → pausar)
+## Output       → o que produzir (relatório JSON + resumo para WhatsApp)</code>
+  </div>
+
+  <p>Nos próximos blocos você vai construir o CLAUDE.md real de cada um dos 3 agentes.</p>
 </div>
 
-<!-- ── 6. AGENT 03 ── -->
-<div class="ebook-page agent">
-  <p class="agent-number">Agente 03</p>
-  <h2>Financeiro Inteligente</h2>
-  <p>Este agente lê seus extratos e notas fiscais, categoriza automaticamente cada lançamento e cruza com o contas a receber. Ele identifica cobranças duplicadas, lança alertas de vencimentos e entrega um dashboard semanal com margem real.</p>
-  <p><strong>O que ele faz na prática:</strong></p>
+<!-- ══════════════════════════════════════════════════
+     BLOCK 3 — AGENTE 01: TRÁFEGO (walkthrough completo)
+     ══════════════════════════════════════════════════ -->
 
-  <ul class="outcomes">
-    <li>Categoriza lançamentos bancários automaticamente</li>
-    <li>Detecta cobranças duplicadas e divergências</li>
-    <li>Alerta vencimentos com 3 dias de antecedência</li>
-    <li>Calcula margem líquida semanal sem planilha manual</li>
+<!-- ── SECTION 05 — O PROBLEMA DO TRÁFEGO ── -->
+<div class="ebook-page agent">
+  <p class="block-label">Bloco 3 — Agente 01: Tráfego</p>
+  <p class="agent-number">Agente 01 · Parte 1 de 4</p>
+  <h2>O Problema do Tráfego</h2>
+  <p>Você descobre que o criativo parou de converter <strong>quando o budget já foi embora</strong>. Não porque ninguém estava olhando — mas porque olhar 12 campanhas a cada hora é humanamente impossível sem um sistema.</p>
+  <p>O cenário típico:</p>
+
+  <ul class="pain-list">
+    <li><strong>12 campanhas rodando simultâneas.</strong> Meta Ads + Google Ads. Ninguém assistindo em tempo real.</li>
+    <li><strong>R$440/dia sendo desperdiçado</strong> em criativos com CPL acima do limite e conjuntos com frequência alta.</li>
+    <li><strong>Você descobre na sexta-feira</strong> que a semana inteira rodou com anúncios ruins.</li>
   </ul>
 
-<pre><code><span class="c-muted"># Agente Financeiro — execução toda segunda-feira às 08:00</span>
-<span class="c-green">→</span> Importando extrato bancário (7 dias)...
-  <span class="c-yellow">143 lançamentos</span> processados
+  <p>Um agente não cansa, não esquece e não tira folga. Ele audita suas campanhas toda manhã às 6h e aplica as regras que você definiu.</p>
+</div>
 
-<span class="c-green">→</span> Categorizando...
+<!-- ── SECTION 06 — CLAUDE.md DO AGENTE DE TRÁFEGO ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 01 · Parte 2 de 4</p>
+  <h2>Configurando o CLAUDE.md</h2>
+  <p>Crie a pasta e o arquivo de configuração:</p>
+
+<pre><code>mkdir ~/meus-agentes/trafego
+touch ~/meus-agentes/trafego/CLAUDE.md</code></pre>
+
+  <p>Conteúdo do <code>CLAUDE.md</code>:</p>
+
+  <div class="claude-md-block">
+<code># Agente de Tráfego Autônomo
+
+## Papel
+Você é um gestor de tráfego sênior especializado em Meta Ads e Google Ads.
+Audite as campanhas ativas e tome ações corretivas automáticas.
+
+## Ferramentas MCP disponíveis
+- `meta-ads-mcp`: campanhas Meta (Facebook/Instagram)
+- `google-ads-mcp`: campanhas Google
+- `slack-mcp`: alertas no Slack
+
+## Regras de decisão
+- CPL > R$60 → pausar campanha + alertar
+- ROAS < 2x → reduzir budget em 30%
+- ROAS > 4x por 3 dias consecutivos → escalar budget em 20%
+- Frequência > 4.5 → pausar conjunto de anúncios
+
+## Output esperado
+1. JSON com ações tomadas (log)
+2. Resumo em português para WhatsApp/Slack
+3. Recomendações para próximas 24h</code>
+  </div>
+
+  <p>Perceba a lógica: <strong>Papel</strong> diz quem é, <strong>Ferramentas</strong> diz o que ele pode usar, <strong>Regras</strong> diz quando agir, <strong>Output</strong> diz o que entregar. Você vai replicar esse padrão nos outros dois agentes.</p>
+</div>
+
+<!-- ── SECTION 07 — RODANDO O AGENTE ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 01 · Parte 3 de 4</p>
+  <h2>Rodando o Agente</h2>
+  <p>Duas formas de executar — manual (para testar) e automatizado (para produção):</p>
+
+  <p class="step-label">Execução manual</p>
+<pre><code>cd ~/meus-agentes/trafego
+claude -p "Auditar campanhas de hoje e aplicar as regras do CLAUDE.md"</code></pre>
+
+  <p class="step-label">Execução automatizada — todo dia às 06:00</p>
+<pre><code><span class="c-muted"># Abrir o editor de tarefas agendadas</span>
+crontab -e
+
+<span class="c-muted"># Adicionar esta linha:</span>
+0 6 * * * cd ~/meus-agentes/trafego && claude --dangerously-skip-permissions \
+  -p "Auditoria diária de campanhas" >> ~/logs/trafego.log 2>&1</code></pre>
+
+  <p>O flag <code>--dangerously-skip-permissions</code> permite que o agente execute ações sem pedir confirmação manual — necessário para automação sem supervisão.</p>
+</div>
+
+<!-- ── SECTION 08 — OUTPUT DO TERMINAL ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 01 · Parte 4 de 4</p>
+  <h2>O Que Acontece na Prática</h2>
+  <p>Isso é o que você vê no terminal quando o agente roda:</p>
+
+<pre><code>$ claude -p "Auditar campanhas de hoje"
+
+<span class="c-green">→</span> Conectando ao Meta Ads MCP...
+  <span class="c-yellow">12 campanhas ativas</span> encontradas
+
+<span class="c-green">→</span> Analisando performance (últimas 24h)...
+
+  <span class="c-red">[PAUSADO] </span> "Black_Stories_v4"     CPL R$94 &gt; limite R$60
+  <span class="c-red">[PAUSADO] </span> "Retargeting_V2"       Frequência 5.1 &gt; 4.5
+  <span class="c-green">[ESCALADO]</span> "Feed_Produto_v7"      ROAS 4.8x → budget R$180 → R$216
+  <span class="c-muted">[OK]      </span> "Stories_Produto_v9"   CPL R$48 ✓
+
+<span class="c-green">→</span> Google Ads: <span class="c-yellow">7 campanhas</span>
+  <span class="c-blue">[REDUZIDO]</span> "Search_Branded"       ROAS 1.7x → budget -30%
+  <span class="c-muted">[OK]      </span> "Search_Concorrente"   ROAS 3.1x ✓
+
+<span class="c-green">→</span> Relatório enviado via Slack e WhatsApp.
+  <span class="c-green">Budget economizado hoje: R$440</span>
+  <span class="c-muted">Tempo de execução: 47 segundos</span></code></pre>
+
+  <p>Em 47 segundos o agente fez o que levaria 2 horas de análise manual — e ainda registrou tudo em log para auditoria.</p>
+
+  <div class="course-bridge">
+    <strong>No Módulo 01 do curso</strong> você configura os MCP servers reais conectados à sua conta de anúncios, personaliza os limites de CPL e ROAS para o seu negócio, e adiciona relatórios em PDF automáticos enviados por email toda manhã.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     BLOCK 4 — AGENTE 02: VENDAS
+     ══════════════════════════════════════════════════ -->
+
+<!-- ── SECTION 09 — O PROBLEMA DAS VENDAS ── -->
+<div class="ebook-page agent">
+  <p class="block-label">Bloco 4 — Agente 02: Vendas</p>
+  <p class="agent-number">Agente 02 · Parte 1 de 3</p>
+  <h2>O Problema das Vendas</h2>
+  <p>Um lead entra. Você ou seu time responde — tarde. Dois dias depois ele fechou com o concorrente.</p>
+  <p>Você já sabe como o agente funciona. O padrão é o mesmo: CLAUDE.md define as regras, MCP servers conectam ao CRM e ao WhatsApp, cron automatiza a execução. O que muda é o problema que ele resolve.</p>
+
+  <ul class="pain-list">
+    <li><strong>Lead novo sem resposta imediata.</strong> Cada hora sem contato reduz a taxa de conversão em 7x. A maioria das empresas responde em 24–48h.</li>
+    <li><strong>Follow-up inconsistente.</strong> Você faz o primeiro contato. Esquece o D+3. O lead esfria.</li>
+    <li><strong>CRM desatualizado.</strong> Status dos deals parado há semanas. Ninguém sabe o que está quente.</li>
+  </ul>
+</div>
+
+<!-- ── SECTION 10 — CLAUDE.md + COMANDOS ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 02 · Parte 2 de 3</p>
+  <h2>CLAUDE.md + Comandos</h2>
+
+  <div class="claude-md-block">
+<code># Agente de Vendas & CRM
+
+## Papel
+Você é um SDR. Monitore o CRM e garanta follow-up imediato e personalizado.
+
+## Ferramentas MCP
+- `hubspot-mcp`: leads, deals, contatos
+- `whatsapp-mcp`: WhatsApp Business API
+
+## Regras
+- Lead novo (< 10 min): mensagem de boas-vindas personalizada
+- Lead sem contato há 48h: follow-up de reaquecimento
+- Deal parado há 7 dias: escalar para humano com resumo do histórico</code>
+  </div>
+
+  <p class="step-label">Executar a cada 5 minutos (via cron)</p>
+<pre><code>*/5 * * * * cd ~/meus-agentes/vendas && claude --dangerously-skip-permissions \
+  -p "Verificar novos leads no CRM e disparar follow-ups conforme CLAUDE.md" \
+  >> ~/logs/vendas.log 2>&1</code></pre>
+
+  <p class="step-label">Output do terminal</p>
+<pre><code><span class="c-green">→</span> 1 novo lead detectado: <span class="c-yellow">Maria S.</span> — Módulo 02
+<span class="c-green">→</span> Mensagem personalizada gerada e enviada via WhatsApp
+  Tempo desde cadastro: <span class="c-green">3 min 12 seg</span>
+<span class="c-green">→</span> Sequência agendada: D+1, D+3, D+7 <span class="c-muted">✓</span></code></pre>
+</div>
+
+<!-- ── SECTION 11 — RESULTADOS ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 02 · Parte 3 de 3</p>
+  <h2>Resultados e o Que o Curso Vai Além</h2>
+  <p>Com follow-up consistente e imediato, empresas que implementaram esse padrão reportam <strong>+20–30% de conversão</strong> — sem contratar nenhum SDR adicional.</p>
+  <p>O agente não vende para você. Mas ele garante que nenhum lead vai esfriar por falta de atenção. A venda acontece quando o humano entra na conversa — com contexto completo e no momento certo.</p>
+
+  <ul class="outcomes">
+    <li>Follow-up em menos de 5 minutos após o cadastro</li>
+    <li>Sequência automática D+1, D+3, D+7</li>
+    <li>CRM atualizado em tempo real sem intervenção manual</li>
+    <li>Escalada para humano quando o deal precisa de atenção</li>
+  </ul>
+
+  <div class="course-bridge">
+    <strong>No Módulo 02 do curso</strong> você aprende a conectar o HubSpot (ou Pipedrive), criar templates de mensagem segmentados por produto, personalizar a sequência de follow-up e gerar previsões de pipeline semanais automáticas.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     BLOCK 5 — AGENTE 03: FINANCEIRO
+     ══════════════════════════════════════════════════ -->
+
+<!-- ── SECTION 12 — O PROBLEMA FINANCEIRO ── -->
+<div class="ebook-page agent">
+  <p class="block-label">Bloco 5 — Agente 03: Financeiro</p>
+  <p class="agent-number">Agente 03 · Parte 1 de 3</p>
+  <h2>O Problema Financeiro</h2>
+  <p>Cobranças duplicadas, boletos vencidos, margem que você só descobre no fim do mês.</p>
+  <p>Você já conhece o padrão. Mais um CLAUDE.md, mais uns MCP servers, mais um cron. O que muda é que o financeiro é onde os erros custam mais caro — e onde a maioria das empresas opera mais no escuro.</p>
+
+  <ul class="pain-list">
+    <li><strong>Categorização manual.</strong> Alguém passa horas toda semana classificando lançamentos em planilha. Margem real: desconhecida.</li>
+    <li><strong>Cobranças duplicadas não detectadas.</strong> Fornecedores cobram duas vezes. Você paga duas vezes. Descobre meses depois.</li>
+    <li><strong>Vencimentos esquecidos.</strong> Multa de 2% que poderia ter sido evitada com um alerta de 3 dias.</li>
+  </ul>
+</div>
+
+<!-- ── SECTION 13 — CLAUDE.md + COMANDOS ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 03 · Parte 2 de 3</p>
+  <h2>CLAUDE.md + Comandos</h2>
+
+  <div class="claude-md-block">
+<code># Agente Financeiro Inteligente
+
+## Papel
+Você é um controller. Processe extratos, categorize lançamentos e gere DRE semanal.
+
+## Ferramentas MCP
+- `filesystem-mcp`: arquivos CSV/OFX de extratos bancários
+- `gmail-mcp`: envio de relatórios por email
+
+## Regras
+- Categorize em: Marketing, Operacional, Pessoal, Receita, Impostos
+- Detecte duplicatas (mesmo valor + fornecedor em < 7 dias)
+- Alerte vencimentos nos próximos 3 dias</code>
+  </div>
+
+  <p class="step-label">Toda segunda-feira às 08:00</p>
+<pre><code>0 8 * * 1 cd ~/meus-agentes/financeiro && claude --dangerously-skip-permissions \
+  -p "Processar extrato da semana e gerar DRE" >> ~/logs/financeiro.log 2>&1</code></pre>
+
+  <p class="step-label">Output do terminal</p>
+<pre><code><span class="c-green">→</span> Processando extrato (<span class="c-yellow">143 lançamentos</span>)...
   Marketing: R$4.200 | Operacional: R$1.850 | Receita: R$18.400
 
-<span class="c-blue">ALERTA</span> Cobrança duplicada detectada: "Assinatura Ferramenta X" R$297
-<span class="c-blue">ALERTA</span> Boleto vencendo em 2 dias: "Fornecedor Y" R$1.100
+<span class="c-green">→</span> Anomalias detectadas:
+  <span class="c-red">[DUPLICATA]</span> "Assinatura Ferramenta X"  R$297
+  <span class="c-blue">[VENCENDO] </span> "Fornecedor Y"             R$1.100 — vence em 2 dias
 
 <span class="c-green">→</span> Margem líquida da semana: <span class="c-green">65.4%</span>
-  Relatório enviado por email.</code></pre>
+<span class="c-green">→</span> Relatório enviado por email. <span class="c-muted">✓</span></code></pre>
 </div>
 
-<!-- ── 7. NEXT STEPS ── -->
+<!-- ── SECTION 14 — RESULTADOS ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 03 · Parte 3 de 3</p>
+  <h2>Resultados e o Que o Curso Vai Além</h2>
+  <p>Decisões financeiras toda semana, sem planilha manual. Você sabe sua margem real toda segunda-feira às 8h, com anomalias já detectadas e vencimentos já alertados.</p>
+  <p>O agente não substitui seu contador. Ele garante que você chega na reunião com o contador <strong>sabendo exatamente o que aconteceu</strong> — sem depender da memória de ninguém.</p>
+
+  <ul class="outcomes">
+    <li>143 lançamentos categorizados em segundos</li>
+    <li>Duplicatas detectadas antes de virar prejuízo</li>
+    <li>Vencimentos alertados com 3 dias de antecedência</li>
+    <li>DRE semanal sem planilha manual</li>
+  </ul>
+
+  <div class="course-bridge">
+    <strong>No Módulo 03 do curso</strong> você conecta seu banco real via Open Finance, cria dashboards interativos com histórico de margem, e configura alertas de anomalia por WhatsApp com threshold personalizável.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     BLOCK 6 — CTA
+     ══════════════════════════════════════════════════ -->
+
+<!-- ── SECTION 15 — PRÓXIMOS PASSOS ── -->
 <div class="ebook-page next-steps">
-  <h2>Próximos Passos</h2>
-  <p>Você acabou de ver o que cada agente faz. Agora, o curso <strong>Empresa Autônoma</strong> te ensina a montar cada um do zero — sem código, com ferramentas acessíveis e suporte direto.</p>
+  <p class="block-label">Bloco 6 — Próximos Passos</p>
+  <h2>Você Acabou de Ver Como Funciona</h2>
+  <p>Neste guia você construiu — pelo menos no papel — 3 agentes reais com CLAUDE.md configurado, comandos de execução e saída de terminal. O padrão é sempre o mesmo: Papel + Ferramentas + Regras + Output.</p>
+  <p>O curso <strong>Empresa Autônoma</strong> te ensina a conectar as APIs reais, personalizar cada agente para o seu negócio e automatizar a execução — <strong>sem precisar de TI, sem programação avançada, com suporte direto</strong>.</p>
 
   <ul class="module-list">
     <li>
