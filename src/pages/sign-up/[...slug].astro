@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SignUp } from '@clerk/astro/components';
+---
+
+<Layout title="Criar Conta — Empresa Autônoma">
+  <div class="auth-page">
+    <SignUp fallbackRedirectUrl="/curso" />
+  </div>
+</Layout>
+
+<style>
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+</style>
