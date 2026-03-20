@@ -1,0 +1,24 @@
+---
+import Layout from './Layout.astro';
+import CursoTopbar from '../components/CursoTopbar.astro';
+
+interface Props {
+  title?: string;
+}
+const { title = 'Curso — Empresa Autônoma' } = Astro.props;
+---
+
+<Layout title={title}>
+  <CursoTopbar />
+  <main class="curso-main">
+    <slot />
+  </main>
+</Layout>
+
+<style>
+  .curso-main {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 40px clamp(20px, 4vw, 48px) 80px;
+  }
+</style>
