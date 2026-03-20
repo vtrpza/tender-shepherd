@@ -20,6 +20,7 @@ const modules = [
       'Sistema de alertas inteligentes',
     ],
     result: 'R$2.000–5.000/mês de budget desperdiçado recuperado. Controle total. Todas as manhãs. Sem abrir o Gerenciador.',
+    cta: 'Automatizar Meu Tráfego — R$97 →',
     href: '#checkout-trafego',
   },
   {
@@ -42,6 +43,7 @@ const modules = [
       'Automação diária de varredura de pipeline',
     ],
     result: '+20–30% de conversão por follow-up consistente. Zero lead esquecido. Visibilidade total do funil.',
+    cta: 'Automatizar Minhas Vendas — R$97 →',
     href: '#checkout-vendas',
   },
   {
@@ -64,6 +66,7 @@ const modules = [
       'Backup automático dos relatórios',
     ],
     result: 'Decisões financeiras baseadas em dados reais. Toda segunda-feira. No seu email. Automaticamente.',
+    cta: 'Automatizar Meu Financeiro — R$97 →',
     href: '#checkout-financeiro',
   },
 ];
@@ -103,7 +106,7 @@ const modules = [
           </div>
 
           <a href={mod.href} class="btn btn-secondary module-cta">
-            Garantir Módulo {mod.num} — R$97 →
+            {mod.cta}
           </a>
           <p class="module-price-note">Preço de fundador. Depois: R$147.</p>
         </div>
@@ -114,7 +117,7 @@ const modules = [
     <div class="combo-cta reveal">
       <p class="combo-lead">Quer os 3? Leva o pacote.</p>
       <a href="#checkout-completo" class="btn btn-primary combo-btn">
-        PACOTE COMPLETO — R$197 →
+        Montar Os 3 Agentes — R$197 →
       </a>
       <p class="combo-sub">3 módulos · economize R$94 · acesso vitalício</p>
       <p class="combo-price">De <s>R$291</s> por R$197 — preço de fundador.</p>

@@ -2,30 +2,33 @@
 const cards = [
   {
     color: 'var(--accent)',
-    title: 'Seu gestor de tráfego cobra R$3.000/mês.',
+    title: 'Seu gestor de tráfego cobra R$3.000/mês. São R$100 por dia útil. Por um PDF genérico.',
     body: `O relatório dele é um PDF genérico que você não entende.
 Enquanto isso, keywords ruins queimam R$200/dia.
 Campanhas saturadas continuam rodando sem pausa.
 E você descobre o prejuízo só no fim do mês.`,
     insight: 'Você está pagando pra ter menos controle, não mais.',
+    closing: 'Cada dia de atraso são R$200+ de budget mal gerenciado.',
   },
   {
     color: 'var(--blue)',
-    title: 'Seus leads estão esfriando agora.',
+    title: 'Seus leads estão esfriando agora. Cada hora sem resposta reduz a chance de conversão em 10x.',
     body: `Entraram pelo Instagram, pelo WhatsApp, pelo formulário.
 Ninguém respondeu em menos de 2 horas.
 O follow-up ficou "pra amanhã". Amanhã virou nunca.
 Aquele lead de R$15k? Fechou com o concorrente.`,
     insight: 'Seu CRM tem 300 contatos. 290 estão no limbo.',
+    closing: 'Cada lead perdido pra demora é receita que o concorrente fechou.',
   },
   {
     color: 'var(--green)',
-    title: 'Sua planilha tem 2 semanas de atraso.',
+    title: 'Você está tomando decisões de R$50.000 com dados de 3 semanas atrás.',
     body: `Você não sabe quanto gastou com fornecedores esse mês.
 Não sabe se pode contratar mais uma pessoa.
 Decisões de R$50k sendo tomadas no feeling.
 Porque ninguém consolida os números a tempo.`,
     insight: 'O DRE? Aquele Excel que o contador manda no dia 20 do mês seguinte. Tarde demais.',
+    closing: 'Toda decisão tardia tem um custo. Você só não consegue medir porque os dados também chegam tarde.',
   },
 ];
 ---
@@ -44,6 +47,7 @@ Porque ninguém consolida os números a tempo.`,
           <h3>{card.title}</h3>
           <p class="card-body">{card.body}</p>
           <p class="card-insight"><em>{card.insight}</em></p>
+          {card.closing && <p class="card-closing">{card.closing}</p>}
         </div>
       ))}
     </div>
@@ -64,6 +68,7 @@ Porque ninguém consolida os números a tempo.`,
   .problem-card h3 { color: var(--text-primary); margin-bottom: 16px; }
   .card-body { white-space: pre-line; font-size: 15px; margin-bottom: 16px; }
   .card-insight { color: var(--text-muted); font-size: 14px; }
+  .card-closing { color: var(--red); font-size: 13px; font-weight: 600; margin-top: 8px; }
   @media (max-width: 900px) {
     .problem-grid { grid-template-columns: 1fr; }
   }
