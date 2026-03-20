@@ -1,0 +1,58 @@
+---
+import CursoLayout from '../../layouts/CursoLayout.astro';
+import ModuleCard from '../../components/ModuleCard.astro';
+import { MODULES, MODULE_SLUGS } from '../../lib/modules';
+import { getUserModules } from '../../lib/db';
+
+const { userId } = Astro.locals.auth();
+const owned = userId ? await getUserModules(userId) : [];
+---
+
+<CursoLayout title="Meus Módulos — Empresa Autônoma">
+  <section class="dashboard">
+    <div class="dashboard-header">
+      <p class="label">Área do aluno</p>
+      <h1>Seus Módulos</h1>
+      <p class="dashboard-sub">Escolha um módulo para começar a construir seus agentes de IA.</p>
+    </div>
+    <div class="dashboard-grid">
+      {MODULE_SLUGS.map((slug) => (
+        <ModuleCard
+          number={MODULES[slug].number}
+          name={MODULES[slug].name}
+          tagline={MODULES[slug].tagline}
+          slug={slug}
+          locked={!owned.includes(slug)}
+          displayPrice={MODULES[slug].displayPrice}
+        />
+      ))}
+    </div>
+  </section>
+</CursoLayout>
+
+<style>
+  .dashboard-header {
+    margin-bottom: 48px;
+  }
+  .dashboard-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .dashboard-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
