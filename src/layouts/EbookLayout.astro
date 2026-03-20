@@ -1,0 +1,56 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = 'Como Automatizar Sua Empresa com Agentes de IA — E-book' } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700&family=Geist+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg:        #0d0d0f;
+        --bg-card:   #16161a;
+        --border:    #2a2a35;
+        --text:      #e8e8f0;
+        --text-muted:#888899;
+        --accent:    #6c63ff;
+        --green:     #4ade80;
+        --font-body: 'Instrument Sans', sans-serif;
+        --font-mono: 'Geist Mono', monospace;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      @media print {
+        @page { size: A4; margin: 20mm 15mm; }
+        body { background: #fff !important; color: #111 !important; }
+        .print-btn { display: none !important; }
+        .ebook-page { break-before: page; }
+        .cover { break-before: avoid; }
+        pre, code { background: #f5f5f5 !important; color: #111 !important; border: 1px solid #ddd !important; }
+        a { color: inherit !important; text-decoration: underline !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

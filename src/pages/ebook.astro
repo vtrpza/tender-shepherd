@@ -1,0 +1,362 @@
+---
+import EbookLayout from '../layouts/EbookLayout.astro';
+---
+<EbookLayout title="Como Automatizar Sua Empresa com Agentes de IA — E-book">
+
+<style>
+  /* ── Layout ── */
+  .ebook-page { padding: 60px 48px; max-width: 800px; margin: 0 auto; }
+  .ebook-page + .ebook-page { border-top: 2px solid var(--border); margin-top: 80px; padding-top: 80px; }
+
+  /* ── Print button ── */
+  .print-bar { text-align: right; padding: 16px 48px; max-width: 800px; margin: 0 auto; }
+  .print-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .print-btn:hover { opacity: 0.88; }
+
+  /* ── Cover ── */
+  .cover {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: none;
+  }
+  .cover-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 32px;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  .cover-subtitle {
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-bottom: 64px;
+  }
+  .cover-author {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .cover-author strong { color: var(--text); }
+
+  /* ── Headings ── */
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  p { margin-bottom: 16px; color: var(--text-muted); }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ── Pain point list ── */
+  .pain-list { list-style: none; margin: 24px 0; }
+  .pain-list li {
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: 15px;
+  }
+  .pain-list li::before {
+    content: '✗ ';
+    color: #f87171;
+    font-weight: 700;
+  }
+
+  /* ── Concept blocks ── */
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+  .concept-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .concept-card h4 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .concept-card p { font-size: 14px; margin-bottom: 0; }
+
+  /* ── Agent sections ── */
+  .agent-number {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .outcomes { list-style: none; margin: 20px 0; }
+  .outcomes li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    color: var(--text);
+  }
+  .outcomes li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+  .outcomes li:last-child { border-bottom: none; }
+
+  /* ── Terminal ── */
+  pre {
+    background: #0a0a0c;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c8c8dc;
+  }
+  .c-green  { color: #4ade80; }
+  .c-yellow { color: #facc15; }
+  .c-blue   { color: #60a5fa; }
+  .c-muted  { color: #555566; }
+
+  /* ── Next steps ── */
+  .module-list { list-style: none; margin: 24px 0; }
+  .module-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .module-price { color: var(--accent); font-weight: 700; }
+  .bundle-box {
+    background: var(--accent);
+    color: #fff;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin: 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bundle-box strong { font-size: 18px; }
+  .bundle-box span { font-size: 22px; font-weight: 700; }
+  .guarantee {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 16px 0 28px;
+    text-align: center;
+  }
+  .cta-link {
+    display: block;
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  @media print {
+    .ebook-page + .ebook-page { border-top: none; margin-top: 0; padding-top: 0; }
+    .concept-grid { grid-template-columns: 1fr 1fr; }
+    .bundle-box { background: #6c63ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+
+<!-- Print button (screen only) -->
+<div class="print-bar">
+  <button class="print-btn" onclick="window.print()">Imprimir / Salvar PDF</button>
+</div>
+
+<!-- ── 1. COVER ── -->
+<div class="ebook-page cover">
+  <span class="cover-badge">E-book gratuito</span>
+  <h1>Como Automatizar Sua Empresa com Agentes de IA</h1>
+  <p class="cover-subtitle">Um guia prático para donos de pequenas empresas</p>
+  <p class="cover-author"><strong>Vitor Pouza</strong><br/>VP Solutions &nbsp;·&nbsp; 2026</p>
+</div>
+
+<!-- ── 2. INTRO ── -->
+<div class="ebook-page intro">
+  <h2>O Problema das Pequenas Empresas em 2026</h2>
+  <p>Você investe em tráfego pago, contrata vendedores, tenta organizar o financeiro — mas a sensação é de que a empresa roda <strong>só enquanto você está olhando</strong>. Assim que você desliga o computador, tudo para.</p>
+  <p>Esse não é um problema de esforço. É um problema de estrutura. Três gargalos aparecem em quase toda empresa pequena:</p>
+
+  <ul class="pain-list">
+    <li><strong>Tráfego caro e sem controle.</strong> Campanhas rodando no horário errado, com criativos velhos, consumindo budget sem diagnóstico. Você descobre o problema depois que o dinheiro foi embora.</li>
+    <li><strong>Vendas sem follow-up.</strong> Um lead entra, você ou seu time responde — tarde. Dois dias depois ele já fechou com o concorrente. O CRM é uma lista de nomes esquecidos.</li>
+    <li><strong>Financeiro cego.</strong> Cobranças duplicadas, boletos não pagos, margem que você só descobre no fim do mês. Decisões tomadas no feeling, não em dados.</li>
+  </ul>
+
+  <p>A boa notícia: esses três gargalos têm solução. Não com mais funcionários — com <strong>agentes de IA</strong> que trabalham enquanto você dorme.</p>
+</div>
+
+<!-- ── 3. CONCEPT ── -->
+<div class="ebook-page concept">
+  <h2>O Que São Agentes de IA</h2>
+  <p>Esqueça robôs de ficção científica. Um agente de IA é, na prática, um <strong>script inteligente</strong> que executa tarefas repetíveis de forma autônoma — sem precisar que você acione manualmente.</p>
+  <p>Ele pode rodar em dois modos:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Agendado</h4>
+      <p>Executa em horários fixos. Todo dia às 6h verifica suas campanhas. Toda segunda-feira gera o relatório financeiro.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Disparado por evento</h4>
+      <p>Age quando algo acontece. Um lead novo entra no CRM → o agente envia o follow-up em menos de 5 minutos.</p>
+    </div>
+  </div>
+
+  <p>Para o dono de empresa, isso significa: <strong>você define a regra uma vez</strong>. O agente executa para sempre.</p>
+  <p>Você não precisa saber programar para montar esses agentes. Nos módulos do curso, cada agente é construído com ferramentas no-code/low-code que qualquer dono de negócio consegue operar.</p>
+</div>
+
+<!-- ── 4. AGENT 01 ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 01</p>
+  <h2>Tráfego Autônomo</h2>
+  <p>Este agente conecta às suas campanhas de Meta Ads e Google Ads e audita performance automaticamente. Ele pausa anúncios com CPL acima do limite, sobe o orçamento dos criativos campeões e envia um relatório de diagnóstico toda manhã.</p>
+  <p><strong>O que ele faz na prática:</strong></p>
+
+  <ul class="outcomes">
+    <li>Monitora CPL, CTR e ROAS a cada hora</li>
+    <li>Pausa campanhas fora do threshold sem intervenção manual</li>
+    <li>Escala budget dos anúncios com melhor desempenho</li>
+    <li>Gera relatório diário com alertas de anomalia</li>
+  </ul>
+
+<pre><code><span class="c-muted"># Agente de Tráfego — execução às 06:00 todos os dias</span>
+<span class="c-green">→</span> Buscando métricas de campanhas ativas...
+  Meta Ads: <span class="c-yellow">12 campanhas</span> | Google Ads: <span class="c-yellow">7 campanhas</span>
+
+<span class="c-green">→</span> Auditando performance...
+  <span class="c-blue">PAUSADO</span>  "Criativo_v3_Stories"  CPL R$87 &gt; limite R$60
+  <span class="c-green">ESCALADO</span> "Criativo_v7_Feed"    ROAS 4.2x → budget +20%
+
+<span class="c-green">→</span> Relatório enviado para WhatsApp e email.
+  <span class="c-muted">Budget economizado hoje: R$340</span></code></pre>
+</div>
+
+<!-- ── 5. AGENT 02 ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 02</p>
+  <h2>Vendas &amp; CRM</h2>
+  <p>Este agente monitora seu CRM em tempo real. Quando um lead entra, ele envia a primeira mensagem de follow-up em menos de 5 minutos — personalizada com o nome, produto de interesse e horário do contato. Depois, agenda os próximos toques automaticamente.</p>
+  <p><strong>O que ele faz na prática:</strong></p>
+
+  <ul class="outcomes">
+    <li>Detecta novos leads e dispara follow-up imediato</li>
+    <li>Personaliza mensagem com contexto do lead</li>
+    <li>Agenda sequência de follow-ups (D+1, D+3, D+7)</li>
+    <li>Atualiza status no CRM sem intervenção manual</li>
+  </ul>
+
+<pre><code><span class="c-muted"># Agente de Vendas — disparado por evento (novo lead)</span>
+<span class="c-green">→</span> Novo lead detectado: <span class="c-yellow">Maria S.</span> — Produto: Módulo 02
+
+<span class="c-green">→</span> Gerando mensagem personalizada...
+  "Oi Maria, vi que você se interessou pelo Módulo de Vendas..."
+
+<span class="c-green">→</span> Enviando via WhatsApp Business API...
+  <span class="c-blue">ENVIADO</span> 14:03 — tempo desde cadastro: <span class="c-yellow">3 min 12 seg</span>
+
+<span class="c-green">→</span> Agendando sequência de follow-up:
+  D+1 → lembrete de valor   <span class="c-muted">✓</span>
+  D+3 → prova social        <span class="c-muted">✓</span>
+  D+7 → oferta de urgência  <span class="c-muted">✓</span></code></pre>
+</div>
+
+<!-- ── 6. AGENT 03 ── -->
+<div class="ebook-page agent">
+  <p class="agent-number">Agente 03</p>
+  <h2>Financeiro Inteligente</h2>
+  <p>Este agente lê seus extratos e notas fiscais, categoriza automaticamente cada lançamento e cruza com o contas a receber. Ele identifica cobranças duplicadas, lança alertas de vencimentos e entrega um dashboard semanal com margem real.</p>
+  <p><strong>O que ele faz na prática:</strong></p>
+
+  <ul class="outcomes">
+    <li>Categoriza lançamentos bancários automaticamente</li>
+    <li>Detecta cobranças duplicadas e divergências</li>
+    <li>Alerta vencimentos com 3 dias de antecedência</li>
+    <li>Calcula margem líquida semanal sem planilha manual</li>
+  </ul>
+
+<pre><code><span class="c-muted"># Agente Financeiro — execução toda segunda-feira às 08:00</span>
+<span class="c-green">→</span> Importando extrato bancário (7 dias)...
+  <span class="c-yellow">143 lançamentos</span> processados
+
+<span class="c-green">→</span> Categorizando...
+  Marketing: R$4.200 | Operacional: R$1.850 | Receita: R$18.400
+
+<span class="c-blue">ALERTA</span> Cobrança duplicada detectada: "Assinatura Ferramenta X" R$297
+<span class="c-blue">ALERTA</span> Boleto vencendo em 2 dias: "Fornecedor Y" R$1.100
+
+<span class="c-green">→</span> Margem líquida da semana: <span class="c-green">65.4%</span>
+  Relatório enviado por email.</code></pre>
+</div>
+
+<!-- ── 7. NEXT STEPS ── -->
+<div class="ebook-page next-steps">
+  <h2>Próximos Passos</h2>
+  <p>Você acabou de ver o que cada agente faz. Agora, o curso <strong>Empresa Autônoma</strong> te ensina a montar cada um do zero — sem código, com ferramentas acessíveis e suporte direto.</p>
+
+  <ul class="module-list">
+    <li>
+      <span>Módulo 01 — Agente de Tráfego Autônomo</span>
+      <span class="module-price">R$97</span>
+    </li>
+    <li>
+      <span>Módulo 02 — Agente de Vendas &amp; CRM</span>
+      <span class="module-price">R$97</span>
+    </li>
+    <li>
+      <span>Módulo 03 — Agente Financeiro Inteligente</span>
+      <span class="module-price">R$97</span>
+    </li>
+  </ul>
+
+  <div class="bundle-box">
+    <strong>Os 3 Módulos — Pacote Completo</strong>
+    <span>R$197</span>
+  </div>
+
+  <p class="guarantee">🔒 Garantia de 7 dias — não gostou, devolvemos 100% do valor. Sem burocracia.</p>
+
+  <a class="cta-link" href="/#checkout-completo">Quero montar os 3 agentes →</a>
+</div>
+
+</EbookLayout>
