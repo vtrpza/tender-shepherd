@@ -1,0 +1,286 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getPurchaseStats, getRecentPurchases } from '../../lib/db';
+import { MODULES } from '../../lib/modules';
+import type { PurchaseRow } from '../../lib/db';
+import Stripe from 'stripe';
+
+const stats = await getPurchaseStats();
+const recent = await getRecentPurchases(10);
+
+let totalRevenue = 0;
+try {
+  const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY);
+  const charges = await stripe.charges.list({ limit: 100 });
+  totalRevenue = charges.data
+    .filter((c) => c.paid && !c.refunded)
+    .reduce((sum, c) => sum + c.amount, 0) / 100;
+} catch {
+  /* Stripe unavailable — show 0 */
+}
+
+const avgPerStudent = stats.totalStudents > 0
+  ? (totalRevenue / stats.totalStudents).toFixed(0)
+  : '0';
+
+function moduleName(slug: string): string {
+  const mod = MODULES[slug as keyof typeof MODULES];
+  return mod ? mod.name : slug;
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  });
+}
+
+function isAdminGrant(row: PurchaseRow): boolean {
+  return row.stripe_session_id.startsWith('admin-grant-');
+}
+---
+
+<AdminLayout title="Dashboard — Admin">
+  <section class="dashboard">
+    <div class="dashboard-header">
+      <p class="label">Painel administrativo</p>
+      <h1>Dashboard</h1>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Receita total</span>
+        <span class="stat-value accent mono">R${totalRevenue.toLocaleString('pt-BR')}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Alunos</span>
+        <span class="stat-value mono">{stats.totalStudents}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Compras</span>
+        <span class="stat-value mono">{stats.totalPurchases}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Receita/aluno</span>
+        <span class="stat-value mono">R${avgPerStudent}</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">Vendas por módulo</h2>
+    <div class="module-grid">
+      {Object.entries(MODULES).map(([slug, mod]) => {
+        const count = stats.perModule[slug] || 0;
+        const pct = stats.totalPurchases > 0
+          ? Math.round((count / stats.totalPurchases) * 100)
+          : 0;
+        return (
+          <div class="module-stat-card">
+            <span class="module-number mono">{mod.number}</span>
+            <span class="module-name">{mod.name}</span>
+            <div class="module-bar-wrap">
+              <div class="module-bar" style={`width: ${Math.max(pct, 4)}%`}></div>
+            </div>
+            <div class="module-meta">
+              <span class="mono">{count} vendas</span>
+              <span class="text-muted">{pct}%</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <h2 class="section-title">Compras recentes</h2>
+    {recent.length === 0 ? (
+      <p class="empty-state">Nenhuma compra registrada.</p>
+    ) : (
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Usuário</th>
+              <th>Módulo</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recent.map((row) => (
+              <tr>
+                <td class="mono">{formatDate(row.created_at)}</td>
+                <td>
+                  <a href={`/admin/users/${row.clerk_user_id}`} class="user-link mono">
+                    {row.clerk_user_id.slice(0, 16)}...
+                  </a>
+                </td>
+                <td>{moduleName(row.module_slug)}</td>
+                <td>
+                  {isAdminGrant(row)
+                    ? <span class="badge badge-amber">Admin</span>
+                    : <span class="badge badge-green">Compra</span>
+                  }
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+</AdminLayout>
+
+<style>
+  .dashboard-header {
+    margin-bottom: 40px;
+  }
+  .dashboard-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .stat-value.accent {
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .module-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .module-number {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .module-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .module-bar-wrap {
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .module-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .module-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .admin-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .admin-table tbody tr:hover {
+    background: var(--bg-elevated);
+  }
+  .user-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .user-link:hover {
+    text-decoration: underline;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-badge);
+  }
+  .badge-green {
+    color: var(--green);
+    background: rgba(16, 185, 129, 0.1);
+  }
+  .badge-amber {
+    color: var(--amber);
+    background: rgba(245, 158, 11, 0.1);
+  }
+  .empty-state {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 32px;
+    text-align: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+  }
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .module-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+---
+<section class="anthropic-proof section">
+  <div class="container">
+    <div class="anthropic-proof-header reveal">
+      <h2>Até a Anthropic usa.</h2>
+      <p>A empresa que criou o Claude usa Claude Code internamente para automatizar marketing.</p>
+    </div>
+
+    <div class="anthropic-proof-card reveal" style="transition-delay:120ms">
+      <div class="anthropic-proof-source">
+        <span class="source-dot" aria-hidden="true"></span>
+        <span class="source-label">Anthropic · Blog Oficial</span>
+      </div>
+
+      <blockquote class="anthropic-proof-quote">
+        O time de Growth Marketing da Anthropic cortou o tempo de criação de anúncios de 30 minutos para 30 segundos usando Claude Code.
+      </blockquote>
+
+      <div class="anthropic-proof-metrics">
+        <span class="metric-badge">
+          <span class="metric-old">30 min</span>
+          <span class="metric-arrow">→</span>
+          <span class="metric-new">30 seg</span>
+        </span>
+        <span class="metric-badge">Sem código</span>
+      </div>
+
+      <a
+        href="https://claude.com/blog/how-anthropic-uses-claude-marketing"
+        target="_blank"
+        rel="noopener"
+        class="anthropic-proof-link"
+      >
+        Ler artigo completo →
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .anthropic-proof-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .anthropic-proof-header h2 {
+    margin-bottom: 12px;
+  }
+  .anthropic-proof-header p {
+    max-width: 480px;
+    margin: 0 auto;
+    font-size: 16px;
+  }
+
+  .anthropic-proof-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 40px;
+    text-align: center;
+  }
+
+  .anthropic-proof-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .source-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease infinite;
+  }
+  .source-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+  }
+
+  .anthropic-proof-quote {
+    font-size: clamp(17px, 2.2vw, 20px);
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+  }
+
+  .anthropic-proof-metrics {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .metric-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 6px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-badge);
+    color: var(--text-secondary);
+    font-family: 'Geist Mono', monospace;
+  }
+  .metric-old {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+  .metric-arrow {
+    color: var(--accent);
+  }
+  .metric-new {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .anthropic-proof-link {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .anthropic-proof-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .anthropic-proof-card {
+      padding: 28px 20px;
+    }
+  }
+</style>

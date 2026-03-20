@@ -1,0 +1,257 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getStudentList } from '../../lib/db';
+import { MODULE_SLUGS, MODULES } from '../../lib/modules';
+import { clerkClient } from '@clerk/astro/server';
+
+const students = await getStudentList();
+const page = Math.max(1, Number(Astro.url.searchParams.get('page')) || 1);
+const perPage = 20;
+const totalPages = Math.ceil(students.length / perPage);
+const paginated = students.slice((page - 1) * perPage, page * perPage);
+
+let userMap: Record<string, { name: string; email: string; imageUrl: string }> = {};
+
+if (paginated.length > 0) {
+  try {
+    const clerk = clerkClient(Astro);
+    const userIds = paginated.map((s) => s.clerk_user_id);
+    const users = await clerk.users.getUserList({ userId: userIds, limit: perPage });
+    for (const u of users.data) {
+      userMap[u.id] = {
+        name: [u.firstName, u.lastName].filter(Boolean).join(' ') || 'Sem nome',
+        email: u.emailAddresses[0]?.emailAddress || '—',
+        imageUrl: u.imageUrl,
+      };
+    }
+  } catch {
+    /* Clerk unavailable — show IDs only */
+  }
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  });
+}
+---
+
+<AdminLayout title="Usuários — Admin">
+  <section class="users-page">
+    <div class="page-header">
+      <div>
+        <p class="label">Gestão</p>
+        <h1>Usuários</h1>
+        <p class="page-sub">{students.length} alunos registrados</p>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        id="user-search"
+        placeholder="Buscar por nome ou e-mail..."
+        class="search-input"
+      />
+    </div>
+
+    {paginated.length === 0 ? (
+      <p class="empty-state">Nenhum aluno encontrado.</p>
+    ) : (
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>E-mail</th>
+              <th>Módulos</th>
+              <th>Primeira compra</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginated.map((student) => {
+              const info = userMap[student.clerk_user_id];
+              return (
+                <tr class="user-row"
+                    data-name={info?.name.toLowerCase() || ''}
+                    data-email={info?.email.toLowerCase() || ''}>
+                  <td>
+                    <div class="user-cell">
+                      {info?.imageUrl && (
+                        <img src={info.imageUrl} alt="" class="user-avatar" />
+                      )}
+                      <span class="user-name">{info?.name || student.clerk_user_id.slice(0, 16)}</span>
+                    </div>
+                  </td>
+                  <td class="text-secondary">{info?.email || '—'}</td>
+                  <td>
+                    <span class="badge badge-blue">{student.module_count} de {MODULE_SLUGS.length}</span>
+                  </td>
+                  <td class="mono text-muted">{formatDate(student.first_purchase)}</td>
+                  <td>
+                    <a href={`/admin/users/${student.clerk_user_id}`} class="btn-view">Ver →</a>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    )}
+
+    {totalPages > 1 && (
+      <nav class="pagination">
+        {page > 1 && (
+          <a href={`/admin/users?page=${page - 1}`} class="btn btn-ghost btn-sm">← Anterior</a>
+        )}
+        <span class="pagination-info mono">Página {page} de {totalPages}</span>
+        {page < totalPages && (
+          <a href={`/admin/users?page=${page + 1}`} class="btn btn-ghost btn-sm">Próxima →</a>
+        )}
+      </nav>
+    )}
+  </section>
+</AdminLayout>
+
+<script>
+  const search = document.getElementById('user-search') as HTMLInputElement;
+  if (search) {
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      document.querySelectorAll<HTMLTableRowElement>('.user-row').forEach((row) => {
+        const name = row.dataset.name || '';
+        const email = row.dataset.email || '';
+        row.style.display = name.includes(q) || email.includes(q) ? '' : 'none';
+      });
+    });
+  }
+</script>
+
+<style>
+  .page-header {
+    margin-bottom: 32px;
+  }
+  .page-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  .page-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+  .search-bar {
+    margin-bottom: 24px;
+  }
+  .search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-button);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+  .search-input:focus {
+    border-color: var(--accent);
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .admin-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-table tbody tr:hover {
+    background: var(--bg-elevated);
+  }
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .user-name {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-badge);
+  }
+  .badge-blue {
+    color: var(--blue);
+    background: rgba(59, 130, 246, 0.1);
+  }
+  .btn-view {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .btn-view:hover {
+    text-decoration: underline;
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .empty-state {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 32px;
+    text-align: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+  }
+</style>

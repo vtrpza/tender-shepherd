@@ -1,0 +1,235 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { MODULES, MODULE_SLUGS } from '../../lib/modules';
+import { getPurchaseStats } from '../../lib/db';
+
+const stats = await getPurchaseStats();
+
+const lessonCounts: Record<string, number> = {
+  trafego: 5,
+  vendas: 5,
+  financeiro: 5,
+};
+---
+
+<AdminLayout title="Módulos — Admin">
+  <section class="modules-page">
+    <div class="page-header">
+      <div>
+        <p class="label">Conteúdo</p>
+        <h1>Módulos</h1>
+        <p class="page-sub">{MODULE_SLUGS.length} módulos ativos</p>
+      </div>
+    </div>
+
+    <div class="modules-grid">
+      {MODULE_SLUGS.map((slug) => {
+        const mod = MODULES[slug];
+        const studentCount = stats.perModule[slug] || 0;
+        const lessons = lessonCounts[slug] || 0;
+        const priceId = import.meta.env[mod.priceEnvKey];
+        return (
+          <div class="module-card">
+            <div class="module-header">
+              <span class="module-number mono">{mod.number}</span>
+              <span class="module-price mono">{mod.displayPrice}</span>
+            </div>
+            <h3 class="module-name">{mod.name}</h3>
+            <p class="module-tagline">{mod.tagline}</p>
+
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="module-stat-value mono">{studentCount}</span>
+                <span class="module-stat-label">alunos</span>
+              </div>
+              <div class="module-stat">
+                <span class="module-stat-value mono">{lessons}</span>
+                <span class="module-stat-label">aulas</span>
+              </div>
+            </div>
+
+            <div class="module-meta">
+              <div class="meta-row">
+                <span class="meta-label">Slug</span>
+                <span class="mono meta-value">{slug}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Stripe Price</span>
+                <span class={`mono meta-value ${priceId ? '' : 'text-red'}`}>
+                  {priceId ? priceId.slice(0, 20) + '...' : 'Não configurado'}
+                </span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Rota</span>
+                <span class="mono meta-value">/curso/{slug}</span>
+              </div>
+            </div>
+
+            <a href={`/curso/${slug}`} class="btn btn-ghost btn-sm">Ver módulo →</a>
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="bundle-info">
+      <div class="bundle-card">
+        <div class="bundle-header">
+          <h3>Pacote completo</h3>
+          <span class="bundle-price mono">R$197</span>
+        </div>
+        <p class="bundle-desc">Inclui os 3 módulos. Economia de R$94 em relação à compra individual.</p>
+        <div class="meta-row">
+          <span class="meta-label">Stripe Price (Bundle)</span>
+          <span class={`mono meta-value ${import.meta.env.STRIPE_PRICE_BUNDLE ? '' : 'text-red'}`}>
+            {import.meta.env.STRIPE_PRICE_BUNDLE
+              ? (import.meta.env.STRIPE_PRICE_BUNDLE as string).slice(0, 20) + '...'
+              : 'Não configurado'}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</AdminLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 32px;
+  }
+  .page-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  .page-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .module-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .module-number {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .module-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .module-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .module-tagline {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .module-stats {
+    display: flex;
+    gap: 24px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .module-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .module-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .module-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .module-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  .meta-label {
+    color: var(--text-muted);
+  }
+  .meta-value {
+    color: var(--text-secondary);
+    font-size: 11px;
+  }
+  .text-red {
+    color: var(--red);
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    text-align: center;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .bundle-info {
+    margin-top: 8px;
+  }
+  .bundle-card {
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bundle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bundle-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .bundle-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .bundle-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  @media (max-width: 768px) {
+    .modules-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

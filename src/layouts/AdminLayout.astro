@@ -1,0 +1,24 @@
+---
+import Layout from './Layout.astro';
+import AdminTopbar from '../components/AdminTopbar.astro';
+
+interface Props {
+  title?: string;
+}
+const { title = 'Admin — Empresa Autônoma' } = Astro.props;
+---
+
+<Layout title={title}>
+  <AdminTopbar />
+  <main class="admin-main">
+    <slot />
+  </main>
+</Layout>
+
+<style>
+  .admin-main {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 40px clamp(20px, 4vw, 48px) 80px;
+  }
+</style>

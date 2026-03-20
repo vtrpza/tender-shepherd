@@ -1,0 +1,308 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { getUserModules, getUserPurchaseDetails } from '../../../lib/db';
+import { MODULES, MODULE_SLUGS } from '../../../lib/modules';
+import { clerkClient } from '@clerk/astro/server';
+import type { PurchaseRow } from '../../../lib/db';
+
+const { id } = Astro.params;
+if (!id) return Astro.redirect('/admin/users');
+
+let userName = 'Usuário';
+let userEmail = '—';
+let userImage = '';
+let userCreated = '';
+
+try {
+  const clerk = clerkClient(Astro);
+  const user = await clerk.users.getUser(id);
+  userName = [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Sem nome';
+  userEmail = user.emailAddresses[0]?.emailAddress || '—';
+  userImage = user.imageUrl;
+  userCreated = new Date(user.createdAt).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  });
+} catch {
+  /* Clerk unavailable */
+}
+
+const owned = await getUserModules(id);
+const purchases = await getUserPurchaseDetails(id);
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  });
+}
+
+function isAdminGrant(row: PurchaseRow): boolean {
+  return row.stripe_session_id.startsWith('admin-grant-');
+}
+---
+
+<AdminLayout title={`${userName} — Admin`}>
+  <section class="user-detail">
+    <a href="/admin/users" class="back-link">← Voltar para usuários</a>
+
+    <div class="profile-card">
+      {userImage && <img src={userImage} alt="" class="profile-avatar" />}
+      <div class="profile-info">
+        <h1>{userName}</h1>
+        <p class="profile-email">{userEmail}</p>
+        <div class="profile-meta">
+          <span class="mono text-muted">ID: {id}</span>
+          {userCreated && <span class="text-muted">Cadastro: {userCreated}</span>}
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Acesso aos módulos</h2>
+    <div class="modules-grid">
+      {MODULE_SLUGS.map((slug) => {
+        const mod = MODULES[slug];
+        const hasAccess = owned.includes(slug);
+        return (
+          <div class={`access-card ${hasAccess ? 'has-access' : ''}`}>
+            <div class="access-header">
+              <span class="module-number mono">{mod.number}</span>
+              <span class={`access-badge ${hasAccess ? 'badge-green' : 'badge-muted'}`}>
+                {hasAccess ? 'Ativo' : 'Sem acesso'}
+              </span>
+            </div>
+            <span class="module-name">{mod.name}</span>
+            <span class="module-tagline">{mod.tagline}</span>
+            <form method="POST" action={hasAccess ? '/api/admin/revoke' : '/api/admin/grant'}>
+              <input type="hidden" name="userId" value={id} />
+              <input type="hidden" name="moduleSlug" value={slug} />
+              <input type="hidden" name="returnTo" value={`/admin/users/${id}`} />
+              <button type="submit" class={`btn btn-sm ${hasAccess ? 'btn-danger' : 'btn-primary'}`}>
+                {hasAccess ? 'Revogar acesso' : 'Conceder acesso'}
+              </button>
+            </form>
+          </div>
+        );
+      })}
+    </div>
+
+    <h2 class="section-title">Histórico de compras</h2>
+    {purchases.length === 0 ? (
+      <p class="empty-state">Nenhuma compra registrada para este usuário.</p>
+    ) : (
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Módulo</th>
+              <th>Tipo</th>
+              <th>Session ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {purchases.map((row) => (
+              <tr>
+                <td class="mono">{formatDate(row.created_at)}</td>
+                <td>{MODULES[row.module_slug as keyof typeof MODULES]?.name || row.module_slug}</td>
+                <td>
+                  {isAdminGrant(row)
+                    ? <span class="badge badge-amber">Admin</span>
+                    : <span class="badge badge-green">Compra</span>
+                  }
+                </td>
+                <td class="mono text-muted session-id">{row.stripe_session_id}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+</AdminLayout>
+
+<style>
+  .back-link {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--text-primary);
+  }
+  .profile-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    margin-bottom: 40px;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .profile-info h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .profile-email {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .profile-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .access-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+  }
+  .access-card.has-access {
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+  .access-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .module-number {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .module-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .module-tagline {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .access-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-badge);
+  }
+  .badge-green {
+    color: var(--green);
+    background: rgba(16, 185, 129, 0.1);
+  }
+  .badge-muted {
+    color: var(--text-muted);
+    background: rgba(82, 82, 91, 0.15);
+  }
+  .badge-amber {
+    color: var(--amber);
+    background: rgba(245, 158, 11, 0.1);
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-badge);
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .btn-danger {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+  .btn-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .admin-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .admin-table tbody tr:hover {
+    background: var(--bg-elevated);
+  }
+  .session-id {
+    font-size: 11px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .empty-state {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 32px;
+    text-align: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+  }
+  @media (max-width: 768px) {
+    .modules-grid {
+      grid-template-columns: 1fr;
+    }
+    .profile-card {
+      flex-direction: column;
+      text-align: center;
+    }
+    .profile-meta {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+</style>
