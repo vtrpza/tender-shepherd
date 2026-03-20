@@ -1,0 +1,210 @@
+---
+import CursoLayout from '../../layouts/CursoLayout.astro';
+import Lesson from '../../components/Lesson.astro';
+import { getUserModules } from '../../lib/db';
+
+const { userId } = Astro.locals.auth();
+const owned = userId ? await getUserModules(userId) : [];
+if (!owned.includes('vendas')) {
+  return Astro.redirect('/curso');
+}
+---
+
+<CursoLayout title="Módulo 02: Agente de Vendas — Empresa Autônoma">
+  <section class="module-page">
+    <div class="module-header">
+      <span class="label">Módulo 02</span>
+      <h1>Agente de Vendas & CRM</h1>
+      <p class="module-sub">Construa um agente que classifica leads, gera follow-ups, monitora seu pipeline e produz forecasts semanais — direto do seu CRM.</p>
+    </div>
+
+    <div class="lessons">
+      <Lesson
+        number={1}
+        title="Conectando HubSpot e Pipedrive via MCP"
+        description="Configure os servidores MCP que dão ao agente acesso ao seu CRM — leitura e escrita de contatos, deals e atividades."
+        notes={`
+          <p>O primeiro passo é dar ao agente acesso ao seu CRM sem escrever integrações do zero.</p>
+          <ul>
+            <li>Configurar o servidor MCP do HubSpot (contatos, deals, empresas, atividades)</li>
+            <li>Configurar o servidor MCP do Pipedrive (leads, deals, pipeline stages)</li>
+            <li>Testar operações de leitura (listar deals abertos, buscar contato)</li>
+            <li>Testar operações de escrita (criar nota, atualizar stage)</li>
+          </ul>
+        `}
+        code={`// .mcp.json — Configuração do CRM
+{
+  "mcpServers": {
+    "hubspot": {
+      "command": "npx",
+      "args": ["-y", "mcp-hubspot"],
+      "env": {
+        "HUBSPOT_ACCESS_TOKEN": "pat-na1-xxx"
+      }
+    },
+    "pipedrive": {
+      "command": "npx",
+      "args": ["-y", "mcp-pipedrive"],
+      "env": {
+        "PIPEDRIVE_API_TOKEN": "xxx",
+        "PIPEDRIVE_DOMAIN": "suaempresa"
+      }
+    }
+  }
+}`}
+        codeLang="json"
+      />
+
+      <Lesson
+        number={2}
+        title="Motor de Classificação de Leads"
+        description="Crie o sistema de scoring que classifica leads em quente, morno e frio com base no comportamento e dados do CRM."
+        notes={`
+          <p>O agente vai analisar cada lead novo e atribuir uma temperatura baseada em critérios que você define:</p>
+          <ul>
+            <li>Definir critérios de scoring (cargo, tamanho da empresa, engajamento, tempo no pipeline)</li>
+            <li>Criar o comando de classificação em <strong>.claude/commands/classify-leads.md</strong></li>
+            <li>Rodar a classificação em batch para todos os leads sem score</li>
+            <li>Atualizar o campo de temperatura no CRM automaticamente</li>
+          </ul>
+        `}
+        code={`# .claude/commands/classify-leads.md
+
+Analise todos os leads sem classificação no CRM.
+
+Critérios de scoring:
+- QUENTE (>70 pontos): decisor (C-level/diretor), empresa >50 funcionários,
+  interagiu nos últimos 7 dias, abriu proposta
+- MORNO (40-70): gerente/coordenador, empresa 10-50 funcionários,
+  interagiu nos últimos 30 dias
+- FRIO (<40): analista/assistente, empresa <10 funcionários,
+  sem interação há mais de 30 dias
+
+Para cada lead:
+1. Calcule o score baseado nos critérios
+2. Classifique como QUENTE/MORNO/FRIO
+3. Atualize o campo "temperatura" no CRM
+4. Adicione uma nota com a justificativa`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={3}
+        title="Follow-ups Automáticos"
+        description="Configure o agente para gerar mensagens de follow-up personalizadas baseadas no contexto de cada deal."
+        notes={`
+          <p>Esqueça templates genéricos. O agente lê o histórico do deal e gera uma mensagem <strong>contextual</strong>:</p>
+          <ul>
+            <li>Criar o comando de geração de follow-up</li>
+            <li>Definir regras por stage do pipeline (primeiro contato, proposta enviada, negociação)</li>
+            <li>Gerar mensagens para WhatsApp e email</li>
+            <li>Salvar os rascunhos como atividades no CRM</li>
+          </ul>
+        `}
+        code={`# .claude/commands/generate-followups.md
+
+Para cada deal que não teve interação nos últimos 5 dias úteis:
+
+1. Leia o histórico completo (notas, emails, atividades)
+2. Identifique o stage atual e o contexto da última interação
+3. Gere uma mensagem de follow-up personalizada:
+   - Tom: profissional mas humano
+   - Referência à última conversa
+   - Próximo passo claro (reunião, demo, decisão)
+   - Máximo 4 linhas para WhatsApp, 8 para email
+
+4. Salve como nota no deal com tag "follow-up-ia"
+5. Liste todos os follow-ups gerados em um resumo`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={4}
+        title="Monitoramento de Pipeline + Alertas"
+        description="Configure alertas para deals parados, oportunidades em risco e mudanças suspeitas no pipeline."
+        notes={`
+          <p>O agente monitora seu pipeline e avisa quando algo precisa de atenção:</p>
+          <ul>
+            <li>Detectar deals parados (sem movimentação no stage por X dias)</li>
+            <li>Identificar deals em risco (valor alto + sem interação recente)</li>
+            <li>Alertar sobre deals que regrediram de stage</li>
+            <li>Enviar resumo diário via Slack com os deals que precisam de ação</li>
+          </ul>
+        `}
+        code={`# .claude/commands/pipeline-monitor.md
+
+Analise todos os deals abertos no pipeline e identifique:
+
+DEALS PARADOS:
+- Qualquer deal no mesmo stage há mais de 14 dias
+- Priorize por valor (maior valor = mais urgente)
+
+DEALS EM RISCO:
+- Valor > R$5.000 sem interação nos últimos 10 dias
+- Deals com data de fechamento prevista nos próximos 7 dias
+
+REGRESSÕES:
+- Deals que voltaram para um stage anterior esta semana
+
+Gere o alerta via webhook do Slack com formato:
+📊 Pipeline Daily | [DATA]
+🔴 X deals parados | 🟡 X em risco | ⬇️ X regressões
+[Lista detalhada com links para cada deal]`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={5}
+        title="Forecast Semanal com Entrega por Email"
+        description="Automatize a geração de um relatório de previsão de receita semanal, entregue por email toda segunda-feira."
+        notes={`
+          <p>Todo gestor precisa de visibilidade. O agente gera um forecast realista baseado no estado atual do pipeline:</p>
+          <ul>
+            <li>Calcular receita prevista por stage (com pesos de probabilidade)</li>
+            <li>Comparar com a meta mensal/trimestral</li>
+            <li>Identificar os deals que mais impactam o resultado</li>
+            <li>Gerar relatório Markdown → PDF e enviar por email</li>
+          </ul>
+        `}
+        code={`#!/bin/bash
+# forecast-weekly.sh — Roda toda segunda às 7h
+
+cd /home/user/meu-projeto
+
+# Gera o forecast via Claude Code
+claude -p "/forecast-pipeline" --output forecast.md
+
+# Converte para PDF
+npx md-to-pdf forecast.md
+
+# Envia por email (via sendgrid/ses)
+node scripts/send-email.js \\
+  --to "gestor@empresa.com" \\
+  --subject "Forecast Semanal — $(date +%d/%m/%Y)" \\
+  --attachment forecast.pdf
+
+echo "Forecast enviado: $(date +%Y-%m-%d)"`}
+        codeLang="bash"
+      />
+    </div>
+  </section>
+</CursoLayout>
+
+<style>
+  .module-header {
+    margin-bottom: 48px;
+  }
+  .module-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .module-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+</style>
