@@ -1,12 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import clerk from '@clerk/astro';
 
 export default defineConfig({
   integrations: [clerk()],
   output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   build: {
     inlineStylesheets: 'always',
   },

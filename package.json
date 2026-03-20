@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^10.0.3",
+    "@astrojs/vercel": "^10.0.2",
     "@clerk/astro": "^3.0.5",
     "@neondatabase/serverless": "^1.0.2",
     "astro": "^6.0.7",
