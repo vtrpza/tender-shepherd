@@ -6,6 +6,7 @@ import { getUserModules } from '../../lib/db';
 
 const { userId } = Astro.locals.auth();
 const owned = userId ? await getUserModules(userId) : [];
+const lockedCount = MODULE_SLUGS.filter((s: string) => !owned.includes(s)).length;
 ---
 
 <CursoLayout title="Meus Módulos — Empresa Autônoma">
@@ -15,6 +16,27 @@ const owned = userId ? await getUserModules(userId) : [];
       <h1>Seus Módulos</h1>
       <p class="dashboard-sub">Escolha um módulo para começar a construir seus agentes de IA.</p>
     </div>
+
+    {lockedCount > 1 && (
+      <div class="bundle-cta">
+        <div class="bundle-inner">
+          <div class="bundle-text">
+            <strong>Pacote completo — os 3 agentes</strong>
+            <span class="bundle-save">Economize R$94</span>
+          </div>
+          <div class="bundle-action">
+            <span class="bundle-price mono">
+              <s class="bundle-old">R$291</s> R$197
+            </span>
+            <form method="POST" action="/api/stripe/checkout">
+              <input type="hidden" name="module" value="bundle" />
+              <button type="submit" class="btn btn-primary btn-sm">Comprar pacote →</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    )}
+
     <div class="dashboard-grid">
       {MODULE_SLUGS.map((slug) => (
         <ModuleCard
@@ -44,6 +66,58 @@ const owned = userId ? await getUserModules(userId) : [];
   .dashboard-sub {
     font-size: 16px;
     color: var(--text-secondary);
+  }
+  .bundle-cta {
+    margin-bottom: 32px;
+  }
+  .bundle-inner {
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .bundle-text strong {
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+  .bundle-save {
+    display: inline-block;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 10px;
+    border-radius: var(--radius-badge);
+  }
+  .bundle-action {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .bundle-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .bundle-old {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-right: 6px;
+  }
+  .btn-sm {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  @media (max-width: 640px) {
+    .bundle-inner {
+      flex-direction: column;
+      text-align: center;
+    }
   }
   .dashboard-grid {
     display: grid;
