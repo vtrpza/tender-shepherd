@@ -1,0 +1,134 @@
+---
+interface Props {
+  number: number;
+  title: string;
+  description: string;
+  notes?: string;
+  code?: string;
+  codeLang?: string;
+}
+const { number, title, description, notes, code, codeLang = '' } = Astro.props;
+---
+
+<article class="lesson">
+  <div class="lesson-header">
+    <span class="lesson-badge mono">Aula {number}</span>
+    <h3 class="lesson-title">{title}</h3>
+    <p class="lesson-description">{description}</p>
+  </div>
+
+  <div class="lesson-video">
+    <div class="video-placeholder">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polygon points="5 3 19 12 5 21 5 3" />
+      </svg>
+      <span class="mono">Em breve</span>
+    </div>
+  </div>
+
+  {notes && (
+    <div class="lesson-notes">
+      <Fragment set:html={notes} />
+    </div>
+  )}
+
+  {code && (
+    <div class="lesson-code">
+      <pre><code class={codeLang}>{code}</code></pre>
+    </div>
+  )}
+</article>
+
+<style>
+  .lesson {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--bg-card);
+    overflow: hidden;
+  }
+  .lesson + .lesson {
+    margin-top: 32px;
+  }
+  .lesson-header {
+    padding: 32px 32px 0;
+  }
+  .lesson-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .lesson-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .lesson-description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .lesson-video {
+    padding: 24px 32px;
+  }
+  .video-placeholder {
+    aspect-ratio: 16/9;
+    background: var(--bg-elevated);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-muted);
+  }
+  .video-placeholder span {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .lesson-notes {
+    padding: 0 32px 24px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .lesson-notes :global(p) {
+    margin-bottom: 12px;
+  }
+  .lesson-notes :global(ul) {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  .lesson-notes :global(li) {
+    margin-bottom: 4px;
+  }
+  .lesson-notes :global(strong) {
+    color: var(--text-primary);
+  }
+  .lesson-code {
+    border-top: 1px solid var(--border);
+    padding: 24px 32px;
+  }
+  .lesson-code pre {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  @media (max-width: 640px) {
+    .lesson-header, .lesson-video, .lesson-notes, .lesson-code {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+</style>
