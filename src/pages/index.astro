@@ -1,11 +1,70 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Topbar from '../components/Topbar.astro';
+import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import Problem from '../components/Problem.astro';
+import Pivot from '../components/Pivot.astro';
+import Modules from '../components/Modules.astro';
+import TechProof from '../components/TechProof.astro';
+import Author from '../components/Author.astro';
+import Pricing from '../components/Pricing.astro';
+import FAQ from '../components/FAQ.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
-	<Welcome />
+  <Topbar />
+  <main style="padding-top: 72px;">
+    <Hero />
+    <Stats />
+    <Problem />
+    <Pivot />
+    <Modules />
+    <TechProof />
+    <Author />
+    <Pricing />
+    <FAQ />
+    <FinalCTA />
+  </main>
+  <Footer />
 </Layout>
+
+<script>
+  // ===== VAGA COUNTER =====
+  function initVagas() {
+    let vagas = Number(localStorage.getItem('vagas_restantes'));
+    if (!vagas || vagas < 12) {
+      vagas = 73; // initial urgency value
+    } else if (Math.random() < 0.3) {
+      vagas = Math.max(12, vagas - 1);
+    }
+    localStorage.setItem('vagas_restantes', String(vagas));
+
+    // Update all [data-vagas] elements
+    document.querySelectorAll('[data-vagas]').forEach(el => {
+      el.textContent = String(vagas);
+    });
+    // Update remaining
+    document.querySelectorAll('[data-vagas-remaining]').forEach(el => {
+      el.textContent = String(vagas);
+    });
+    return vagas;
+  }
+  initVagas();
+
+  // ===== SCROLL REVEAL =====
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+  );
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
