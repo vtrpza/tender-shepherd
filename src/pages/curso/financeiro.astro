@@ -1,0 +1,227 @@
+---
+import CursoLayout from '../../layouts/CursoLayout.astro';
+import Lesson from '../../components/Lesson.astro';
+import { getUserModules } from '../../lib/db';
+
+const { userId } = Astro.locals.auth();
+const owned = userId ? await getUserModules(userId) : [];
+if (!owned.includes('financeiro')) {
+  return Astro.redirect('/curso');
+}
+---
+
+<CursoLayout title="Módulo 03: Agente Financeiro — Empresa Autônoma">
+  <section class="module-page">
+    <div class="module-header">
+      <span class="label">Módulo 03</span>
+      <h1>Agente Financeiro Inteligente</h1>
+      <p class="module-sub">Construa um agente que processa extratos bancários, categoriza despesas, gera DRE e detecta anomalias — seu auxiliar financeiro 24/7.</p>
+    </div>
+
+    <div class="lessons">
+      <Lesson
+        number={1}
+        title="Processando Extratos Bancários"
+        description="Configure o agente para ler e interpretar extratos em CSV e OFX — os formatos mais comuns dos bancos brasileiros."
+        notes={`
+          <p>O primeiro passo é ensinar o agente a ler os dados financeiros da sua empresa:</p>
+          <ul>
+            <li>Entender os formatos CSV e OFX (Open Financial Exchange)</li>
+            <li>Configurar o parsing de extratos dos principais bancos (Itaú, Bradesco, Nubank, Inter)</li>
+            <li>Normalizar os dados: data, descrição, valor, tipo (crédito/débito)</li>
+            <li>Criar o comando de importação em <strong>.claude/commands/import-statement.md</strong></li>
+          </ul>
+        `}
+        code={`# .claude/commands/import-statement.md
+
+Leia o arquivo de extrato fornecido e normalize os dados.
+
+Formatos suportados:
+- CSV (separador ; ou ,) com colunas: Data, Descrição, Valor
+- OFX (XML do Open Financial Exchange)
+
+Para cada transação, extraia:
+1. Data (formato YYYY-MM-DD)
+2. Descrição original do banco
+3. Valor (positivo = entrada, negativo = saída)
+4. Tipo: CREDITO ou DEBITO
+
+Salve o resultado em data/transacoes-YYYY-MM.json
+Reporte: X transações importadas, período de DD/MM a DD/MM`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={2}
+        title="Categorização Inteligente de Despesas"
+        description="Use IA para categorizar cada transação automaticamente — e aprenda a treinar o agente com as categorias da sua empresa."
+        notes={`
+          <p>Em vez de categorizar centenas de transações manualmente, o agente faz isso em segundos:</p>
+          <ul>
+            <li>Definir suas categorias (Pessoal, Marketing, Infraestrutura, Salários, Impostos, etc.)</li>
+            <li>Criar regras de categorização (regex + IA)</li>
+            <li>O agente aprende com correções — melhora a cada mês</li>
+            <li>Gerar relatório de categorização com % de confiança</li>
+          </ul>
+        `}
+        code={`# .claude/commands/categorize-expenses.md
+
+Categorize todas as transações não-categorizadas do mês atual.
+
+Categorias disponíveis:
+- RECEITA: vendas, serviços, reembolsos
+- PESSOAL: salários, benefícios, FGTS, INSS
+- MARKETING: ads, ferramentas, eventos
+- INFRA: hosting, SaaS, domínios, telefonia
+- IMPOSTOS: DAS, ISS, IRPJ, CSLL
+- OPERACIONAL: escritório, transporte, alimentação
+- FINANCEIRO: juros, tarifas bancárias, IOF
+
+Para cada transação:
+1. Analise a descrição e o valor
+2. Atribua a categoria mais provável
+3. Adicione nível de confiança (ALTA/MÉDIA/BAIXA)
+4. Transações com confiança BAIXA vão para revisão manual
+
+Salve em data/categorizado-YYYY-MM.json
+Resumo: X categorizadas (Y% alta confiança, Z% para revisão)`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={3}
+        title="Gerando DRE e Fluxo de Caixa"
+        description="Automatize a geração da DRE (Demonstração do Resultado) e do fluxo de caixa mensal — relatórios que seu contador vai amar."
+        notes={`
+          <p>Com as transações categorizadas, gerar os relatórios financeiros é automático:</p>
+          <ul>
+            <li>Gerar DRE simplificada (receitas - deduções - custos - despesas = resultado)</li>
+            <li>Gerar fluxo de caixa mensal (entradas vs. saídas por categoria)</li>
+            <li>Comparar com meses anteriores (variação %)</li>
+            <li>Exportar em PDF formatado para enviar ao contador</li>
+          </ul>
+        `}
+        code={`# .claude/commands/generate-dre.md
+
+Gere a DRE e o Fluxo de Caixa do mês especificado.
+
+DRE SIMPLIFICADA:
+(+) Receita Bruta
+(-) Deduções (impostos sobre receita)
+(=) Receita Líquida
+(-) Custos (pessoal, infra)
+(=) Lucro Bruto
+(-) Despesas Operacionais (marketing, operacional)
+(-) Despesas Financeiras (juros, tarifas)
+(=) Resultado do Exercício
+
+FLUXO DE CAIXA:
+- Entradas por categoria
+- Saídas por categoria
+- Saldo do mês
+- Saldo acumulado
+
+Inclua variação % vs. mês anterior.
+Exporte como Markdown formatado para conversão em PDF.`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={4}
+        title="Detecção de Anomalias e Alertas"
+        description="Configure o agente para detectar gastos fora do padrão e enviar alertas antes que virem problemas."
+        notes={`
+          <p>O agente monitora seus gastos e identifica anomalias automaticamente:</p>
+          <ul>
+            <li>Definir baselines por categoria (média dos últimos 3 meses)</li>
+            <li>Detectar transações individuais acima do normal</li>
+            <li>Detectar categorias com gasto acumulado acima do orçamento</li>
+            <li>Enviar alerta via Slack/email quando anomalia é detectada</li>
+          </ul>
+        `}
+        code={`# .claude/commands/detect-anomalies.md
+
+Analise as transações do mês corrente vs. a média dos últimos 3 meses.
+
+ANOMALIAS INDIVIDUAIS:
+- Qualquer transação > 3x a média de transações na mesma categoria
+- Transações em categorias novas (nunca vistas antes)
+- Transações duplicadas (mesmo valor + descrição em 48h)
+
+ANOMALIAS DE CATEGORIA:
+- Categoria com gasto acumulado > 150% da média trimestral
+- Categoria com crescimento > 50% vs. mês anterior
+
+Para cada anomalia detectada:
+1. Descrição da transação/categoria
+2. Valor atual vs. valor esperado
+3. Nível: 🔴 CRÍTICO (>200%) | 🟡 ATENÇÃO (>150%)
+4. Sugestão de ação
+
+Envie alerta via webhook se houver anomalias CRÍTICAS.`}
+        codeLang="markdown"
+      />
+
+      <Lesson
+        number={5}
+        title="Dashboard HTML + Automação Semanal"
+        description="Gere um dashboard interativo em HTML e configure a automação completa que roda toda semana."
+        notes={`
+          <p>A cereja do bolo: um dashboard visual que você abre no navegador e uma automação que roda sozinha:</p>
+          <ul>
+            <li>Gerar um arquivo HTML com gráficos (receitas vs. despesas, breakdown por categoria)</li>
+            <li>Usar Chart.js via CDN para gráficos interativos</li>
+            <li>Configurar cron job semanal: importar → categorizar → relatório → dashboard → email</li>
+            <li>O fluxo completo roda em menos de 2 minutos</li>
+          </ul>
+        `}
+        code={`#!/bin/bash
+# finance-weekly.sh — Pipeline financeiro semanal (sexta às 18h)
+
+cd /home/user/meu-projeto
+
+echo "1/5 Importando extratos..."
+claude -p "/import-statement extratos/$(date +%Y-%m).csv"
+
+echo "2/5 Categorizando transações..."
+claude -p "/categorize-expenses"
+
+echo "3/5 Gerando DRE e fluxo de caixa..."
+claude -p "/generate-dre $(date +%Y-%m)" --output reports/dre.md
+npx md-to-pdf reports/dre.md
+
+echo "4/5 Verificando anomalias..."
+claude -p "/detect-anomalies"
+
+echo "5/5 Gerando dashboard..."
+claude -p "Gere um dashboard HTML com Chart.js mostrando:
+- Gráfico de barras: receitas vs despesas (últimos 6 meses)
+- Gráfico de pizza: despesas por categoria (mês atual)
+- Tabela: top 10 maiores despesas do mês
+Salve em reports/dashboard.html"
+
+echo "Pipeline completo: $(date)"`}
+        codeLang="bash"
+      />
+    </div>
+  </section>
+</CursoLayout>
+
+<style>
+  .module-header {
+    margin-bottom: 48px;
+  }
+  .module-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .module-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+</style>
